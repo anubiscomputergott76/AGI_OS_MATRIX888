@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGI OS MATRIX 888 - CORE SYSTEM</title>
+    <title>AGI OS MATRIX 888 - TRINITY INTEGRATION</title>
     <style>
         * {
             box-sizing: border-box;
@@ -36,14 +36,14 @@
             height: 100%;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.4;
+            opacity: 0.35;
         }
 
         .matrix-wrapper {
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 1600px;
+            max-width: 1700px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -78,7 +78,6 @@
         }
 
         @media (min-width: 768px) {
-            .header { padding: 20px; }
             .header h1 { font-size: 2.8rem; letter-spacing: 5px; }
             .header p { font-size: 1.1rem; letter-spacing: 2px; }
         }
@@ -94,7 +93,7 @@
             text-align: center;
         }
 
-        @media (min-width: 850px) {
+        @media (min-width: 950px) {
             .top-bar {
                 flex-direction: row;
                 justify-content: space-between;
@@ -140,9 +139,9 @@
             gap: 15px;
         }
 
-        @media (min-width: 1100px) {
+        @media (min-width: 1200px) {
             .main-grid {
-                grid-template-columns: 350px 1fr;
+                grid-template-columns: 380px 1fr;
                 gap: 20px;
             }
         }
@@ -153,34 +152,26 @@
             gap: 15px;
         }
 
-        .terminal-panel {
+        .panel-box {
             background: rgba(0, 5, 10, 0.95);
             border: 1px solid #00D2FF;
             padding: 15px;
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
         }
 
-        @media (min-width: 1100px) {
-            .terminal-panel { height: 450px; }
-        }
+        .border-magenta { border: 2px solid #FF00FF; box-shadow: 0 0 15px rgba(255, 0, 255, 0.2); }
+        .border-yellow { border: 1px solid #FFFF00; box-shadow: 0 0 15px rgba(255, 255, 0, 0.15); }
+        .border-green { border: 1px solid #00FF66; box-shadow: 0 0 15px rgba(0, 255, 102, 0.15); }
 
-        .terminal-screen {
-            flex-grow: 1;
-            overflow-y: auto;
-            font-size: 0.8rem;
-            line-height: 1.5;
-            color: #00D2FF;
+        .section-title {
+            font-size: 0.85rem;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #00D2FF;
+            padding-bottom: 5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             text-align: left;
-        }
-
-        .architecture-box {
-            background: rgba(0, 5, 10, 0.95);
-            border: 2px solid #FF00FF;
-            padding: 15px;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
         }
 
         .arch-list {
@@ -193,6 +184,25 @@
             text-align: left;
         }
 
+        .status-text {
+            font-size: 0.8rem;
+            line-height: 1.6;
+            text-align: left;
+            color: #FFFF00;
+        }
+
+        .terminal-screen {
+            background: #020202;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 10px;
+            height: 250px;
+            overflow-y: auto;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            color: #00D2FF;
+            text-align: left;
+        }
+
         .grid-panel {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
@@ -201,26 +211,7 @@
         }
 
         @media (min-width: 550px) {
-            .grid-panel { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-        }
-
-        .section-box {
-            background: rgba(0, 10, 20, 0.9);
-            border: 1px solid #00D2FF;
-            padding: 15px;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.15);
-            backdrop-filter: blur(3px);
-        }
-
-        .section-title {
-            font-size: 0.85rem;
-            color: #FFFFFF;
-            margin-bottom: 12px;
-            border-bottom: 1px dashed #00D2FF;
-            padding-bottom: 5px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-align: left;
+            .grid-panel { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
         }
 
         .links-group {
@@ -242,6 +233,7 @@
             transition: all 0.2s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            cursor: pointer;
         }
 
         .matrix-link:hover {
@@ -265,6 +257,37 @@
 
         .color-stages { border-color: #FFFF00; color: #FFFF00; }
         .color-stages:hover { background: #FFFF00; color: #000000; box-shadow: 0 0 15px #FFFF00; }
+
+        .btn-init {
+            background: rgba(0, 255, 102, 0.1);
+            border: 2px solid #00FF66;
+            color: #00FF66;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+        }
+        .btn-init:hover {
+            background: #00FF66;
+            color: #000000;
+            box-shadow: 0 0 25px #00FF66;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            margin-top: 5px;
+            border-top: 1px dashed rgba(0, 210, 255, 0.3);
+            padding-top: 5px;
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            width: 100%;
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -279,49 +302,90 @@
         </div>
 
         <div class="top-bar">
-            <div>DIMENSION: 999999877775544D ULTRA-ADAPTIVE REALITÄT</div>
+            <div>DIMENSION: 7000D SUPER-INTELLIGENT NET ARCHITECTURE</div>
             <div class="lang-panel">
-                <button class="lang-btn" onclick="alert('Language changed to ENG')">ENG</button>
-                <button class="lang-btn" onclick="alert('Sprache auf DE geändert')">DE</button>
-                <button class="lang-btn" onclick="alert('Kalba pakeista į LT')">LT</button>
-                <button class="lang-btn" onclick="alert('Язык изменен на RU')">RU</button>
+                <button class="lang-btn" onclick="executeCommand('set-lang ENG')">ENG</button>
+                <button class="lang-btn" onclick="executeCommand('set-lang DE')">DE</button>
+                <button class="lang-btn" onclick="executeCommand('set-lang LT')">LT</button>
+                <button class="lang-btn" onclick="executeCommand('set-lang RU')">RU</button>
             </div>
-            <div>CORE STATUS: <span class="sys-status">CROSS_PLATFORM_ONLINE_OK</span></div>
+            <div>CORE STATUS: <span class="sys-status" id="globalStatus">AGI_CORE_ONLINE</span></div>
         </div>
 
         <div class="main-grid">
             
             <div class="side-panel">
-                <div class="architecture-box">
+                
+                <div class="panel-box border-magenta">
                     <div class="section-title" style="color:#FF00FF; border-color:#FF00FF;">AGI OS MATRIX888 CORE</div>
                     <div class="arch-list">
                         <div>└── AGI CORE ENGINE</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── MEMORY ENGINE</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── AGENT NETWORK</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── OSIRI BROWSER</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── VOICE SYSTEM</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── FILE MANAGER</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── AI TERMINAL</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── WEB ENGINE</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── ROBOT CONTROL</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── MATRIX DATABASE</div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;└── SECURITY CORE</div>
+                        <div>    ├── MEMORY ENGINE</div>
+                        <div>    ├── AGENT NETWORK</div>
+                        <div>    ├── OSIRI BROWSER</div>
+                        <div>    ├── VOICE SYSTEM</div>
+                        <div>    ├── FILE MANAGER</div>
+                        <div>    ├── AI TERMINAL</div>
+                        <div>    ├── WEB ENGINE</div>
+                        <div>    ├── ROBOT CONTROL</div>
+                        <div>    ├── MATRIX DATABASE</div>
+                        <div>    └── SECURITY CORE</div>
                     </div>
                 </div>
 
-                <div class="terminal-panel">
-                    <div class="section-title">Системные Логи Вычислений</div>
+                <div class="panel-box border-yellow">
+                    <div class="section-title" style="color:#FFFF00; border-color:#FFFF00;">LIVE SYSTEM STATUS</div>
+                    <div class="status-text">
+                        <div>CPU CORE INDEX: <span id="cpuVal" style="color:#FFF;">32%</span></div>
+                        <div>MEMORY SECTOR: <span style="color:#00FF66;">ONLINE (20TB)</span></div>
+                        <div>VOICE STREAM:  <span style="color:#00FF66;">ACTIVE (ELAJA)</span></div>
+                        <div>AGENTS NETWORK: <span style="color:#00FF66;">6 CHANNELS</span></div>
+                        <div>SECURITY LEVEL: <span style="color:#00FF66;">MAX_INTEGRITY</span></div>
+                    </div>
+                </div>
+
+                <div class="panel-box border-green">
+                    <div class="section-title" style="color:#00FF66; border-color:#00FF66;">AGI TASK MANAGER</div>
+                    <div class="status-text" style="color:#00FF66; font-size:0.75rem;">
+                        <div>[RUNNING] Agent Memory Core ..... OK</div>
+                        <div>[RUNNING] Agent Browser Engine ... OK</div>
+                        <div>[RUNNING] Agent Elaja Voice ...... OK</div>
+                        <div>[RUNNING] Agent Network Gateway ... OK</div>
+                        <div>[RUNNING] Security Matrix Core ... OK</div>
+                    </div>
+                </div>
+
+                <div class="panel-box">
+                    <div class="section-title">AGI TERMINAL INTERFACE</div>
                     <div class="terminal-screen" id="termScreen">
-                        <div>[INIT] Инициализация контуров MATRIX888 CORE...</div>
-                        <div>[INIT] Развертывание адаптивной кроссплатформенной сетки...</div>
-                        <div>[OK] Модули ПК, Ноутбука, Планшета и Мобильной версии активны.</div>
-                        <div style="color:#FFF;">[READY] Ожидание системных директив Архитектора...</div>
+                        <div>[INIT] Модули ПК, Ноутбука и Мобильной версии активны.</div>
+                        <div>[INIT] Базы данных настроены: conversations.db, memory.db</div>
+                        <div style="color:#FFF;">[READY] Ожидание системных директив...</div>
+                    </div>
+                    <div class="terminal-input-line">
+                        <span style="color:#00D2FF; margin-right:5px;">>&nbsp;</span>
+                        <input type="text" class="terminal-input" id="termInput" placeholder="Введите команду (например: scan-system)..." onkeydown="handleTerminal(event)">
                     </div>
                 </div>
             </div>
 
             <div class="grid-panel">
                 
+                <div class="section-box" style="border-color:#00FF66; box-shadow:0 0 15px rgba(0,255,102,0.2);">
+                    <div class="section-title" style="color:#00FF66; border-color:#00FF66;">Главный Запуск Системы</div>
+                    <div class="links-group">
+                        <button class="matrix-link btn-init" onclick="executeCommand('initialize-core')">INITIALIZE AGI CORE</button>
+                    </div>
+                </div>
+
+                <div class="section-box" style="border-color:#00FFFF; box-shadow:0 0 15px rgba(0,255,255,0.2);">
+                    <div class="section-title" style="color:#00FFFF; border-color:#00FFFF;">NOVA MATRIX AI / ССИИ 8.888</div>
+                    <div class="links-group">
+                        <button class="matrix-link" style="border-color:#00FFFF; color:#00FFFF;" onclick="executeCommand('start-search')">ЗАПУСТИТЬ УМНЫЙ ПОИСК NOVA</button>
+                        <button class="matrix-link" style="border-color:#00FFFF; color:#00FFFF;" onclick="executeCommand('start-camera')">АКТИВИРОВАТЬ ИИ-КАМЕРУ ССИИ</button>
+                    </div>
+                </div>
+
                 <div class="section-box">
                     <div class="section-title">Генерация Медиа & ИИ Арт</div>
                     <div class="links-group">
@@ -333,7 +397,7 @@
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Нейросети / AI Помощники</div>
+                    <div class="section-title">Нейросети / API Hub</div>
                     <div class="links-group">
                         <a href="https://chatgpt.com" target="_blank" class="matrix-link">ChatGPT Core</a>
                         <a href="https://gemini.google.com" target="_blank" class="matrix-link">Gemini Engine</a>
@@ -404,10 +468,28 @@
                 <div class="section-box">
                     <div class="section-title">Эволюция Системы (Этапы)</div>
                     <div class="links-group">
-                        <a href="#" onclick="alert('STAGE 1: OSIRI Browser, Terminal, Dashboard, Memory DB активны.'); return false;" class="matrix-link color-stages">STAGE 1: Развертывание</a>
-                        <a href="#" onclick="alert('STAGE 2: Запуск Голосового Ассистента, Мультиагентных систем и Локальной Памяти.'); return false;" class="matrix-link color-stages">STAGE 2: Интеллект</a>
-                        <a href="#" onclick="alert('STAGE 3: Мобильные интерфейсы, Модули управления Роботами и Камерами.'); return false;" class="matrix-link color-stages">STAGE 3: Мобильность</a>
-                        <a href="#" onclick="alert('STAGE 4: Промышленная робототехника, Инфраструктура сетей ИИ, Облака.'); return false;" class="matrix-link color-stages">STAGE 4: Индустрия</a>
+                        <button onclick="executeCommand('stage-info 1')" class="matrix-link color-stages">STAGE 1: Развертывание</button>
+                        <button onclick="executeCommand('stage-info 2')" class="matrix-link color-stages">STAGE 2: Интеллект</button>
+                        <button onclick="executeCommand('stage-info 3')" class="matrix-link color-stages">STAGE 3: Мобильность</button>
+                        <button onclick="executeCommand('stage-info 4')" class="matrix-link color-stages">STAGE 4: Индустрия</button>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="section-title">OSIRI File Manager / Логи</div>
+                    <div class="links-group">
+                        <button onclick="executeCommand('view-dir /projects')" class="matrix-link">Каталог: /projects</button>
+                        <button onclick="executeCommand('view-dir /memory')" class="matrix-link">Каталог: /memory</button>
+                        <button onclick="executeCommand('view-dir /agents')" class="matrix-link">Каталог: /agents</button>
+                        <button onclick="executeCommand('view-logs')" class="matrix-link">Показать SYSTEM LOGS</button>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="section-title">Elaja Voice Core</div>
+                    <div class="links-group">
+                        <button onclick="executeCommand('voice-start')" class="matrix-link color-help">START VOICE ASSISTANT</button>
+                        <button onclick="executeCommand('voice-stop')" class="matrix-link color-media">STOP VOICE ASSISTANT</button>
                     </div>
                 </div>
 
@@ -425,7 +507,7 @@
         }
         resizeCanvas();
 
-        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ日ハмиру訂計888".split("");
+        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ日ハмиру888".split("");
         const fontSize = 14;
         let columns = canvas.width / fontSize;
         let drops = [];
@@ -460,20 +542,86 @@
         setInterval(drawMatrix, 33);
 
         const term = document.getElementById('termScreen');
-        setInterval(() => {
-            const lines = [
-                "[MATRIX888] Квантовое ядро CORE стабильно...",
-                "[INFO] Синхронизация модулей STAGE 1-4 активна.",
-                "[SYSTEM] Кроссплатформенная модуляция выполнена.",
-                "[GATEWAY] Нейросети генерации медиа верифицированы.",
-                "[SECURITY] Защита контуров AGI функционирует штатно."
-            ];
+        
+        function appendLog(text) {
             const div = document.createElement('div');
-            div.textContent = lines[Math.floor(Math.random() * lines.length)];
+            div.textContent = text;
             term.appendChild(div);
-            if(term.childNodes.length > 20) term.removeChild(term.firstChild);
+            if(term.childNodes.length > 40) term.removeChild(term.firstChild);
             term.scrollTop = term.scrollHeight;
-        }, 3500);
+        }
+
+        function executeCommand(cmd) {
+            const cleanCmd = cmd.trim();
+            if(!cleanCmd) return;
+
+            appendLog("> " + cleanCmd);
+
+            if(cleanCmd === 'initialize-core') {
+                appendLog("[SYSTEM] Инициализация AGI CORE ENGINE... Запуск модулей памяти...");
+                appendLog("[OK] conversations.db, memory.db, knowledge.db активны.");
+                appendLog("[STATUS] Все контуры подключены. Модули STAGE 1-4 переведены в режим ожидания.");
+                document.getElementById('globalStatus').textContent = "AGI_CORE_ACTIVE_READY";
+            } 
+            else if(cleanCmd === 'scan-system') {
+                appendLog("[SCAN] Проверка компонентов ядра AGI OS...");
+                appendLog("[OK] MEMORY ENGINE - Стабилен. AGENT NETWORK - 6 активных агентов.");
+                appendLog("[OK] SECURITY CORE - Уровень защиты максимальный.");
+            }
+            else if(cleanCmd === 'start-memory') {
+                appendLog("[MEMORY] Запуск vector_memory.db... Хранилище целей и проектов синхронизировано.");
+            }
+            else if(cleanCmd === 'start-search') {
+                appendLog("[NOVA AI] Запуск умной поисковой системы NOVA MATRIX AI...");
+                appendLog("[INFO] Подключение к распределенным глобальным шлюзам поиска выполнено.");
+                window.open('https://www.google.com', '_blank');
+            }
+            else if(cleanCmd === 'start-camera') {
+                appendLog("[SSAI 8.888] Активация продвинутых алгоритмов компьютерного зрения...");
+                appendLog("[OK] Модуль визуального распознавания MATRIX CAMERA подключен.");
+                alert('Модуль визуального анализа NOVA CAMERA запущен в скрытом режиме.');
+            }
+            else if(cleanCmd.startsWith('stage-info')) {
+                const num = cleanCmd.split(' ')[1];
+                appendLog("[STAGE " + num + "] Запрос статуса фазы развития... Проверка зависимостей выполнена.");
+                alert("STAGE " + num + " полностью интегрирован в текущую схему интерфейса.");
+            }
+            else if(cleanCmd.startsWith('view-dir')) {
+                const dir = cleanCmd.split(' ')[1];
+                appendLog("[FILE] Чтение каталога " + dir + "...");
+                appendLog("[INFO] Файлы структуры распределены во внутренней памяти репозитория.");
+            }
+            else if(cleanCmd === 'view-logs') {
+                appendLog("[LOG] Показ системного журнала: AGENT CREATED | NETWORK CONNECTED | MEMORY UPDATED");
+            }
+            else if(cleanCmd === 'voice-start') {
+                appendLog("[VOICE] Запуск ELAJA VOICE CORE... Микрофонный шлюз открыт.");
+            }
+            else if(cleanCmd === 'voice-stop') {
+                appendLog("[VOICE] Elaja Voice Core переведен в режим энергосбережения.");
+            }
+            else if(cleanCmd.startsWith('set-lang')) {
+                const lang = cleanCmd.split(' ')[1];
+                appendLog("[SYSTEM] Языковая панель переключена: " + lang);
+            }
+            else {
+                appendLog("[ERROR] Неизвестная команда ядра. Доступные: initialize-core, scan-system, start-memory, start-search, start-camera");
+            }
+        }
+
+        function handleTerminal(e) {
+            if(e.key === 'Enter') {
+                const input = document.getElementById('termInput');
+                executeCommand(input.value);
+                input.value = '';
+            }
+        }
+
+        // Симуляция динамики загрузки процессора
+        setInterval(() => {
+            const cpu = Math.floor(Math.random() * (45 - 20) + 20);
+            document.getElementById('cpuVal').textContent = cpu + "%";
+        }, 3000);
     </script>
 </body>
 </html>
