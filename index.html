@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGI OS MATRIX 888 - TRINITY INTEGRATION</title>
+    <title>AGI OS MATRIX 888 - GLOBAL CORE PLATFORM</title>
     <style>
         * {
             box-sizing: border-box;
@@ -43,7 +43,7 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 1700px;
+            max-width: 1800px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -139,9 +139,9 @@
             gap: 15px;
         }
 
-        @media (min-width: 1200px) {
+        @media (min-width: 1250px) {
             .main-grid {
-                grid-template-columns: 380px 1fr;
+                grid-template-columns: 400px 1fr;
                 gap: 20px;
             }
         }
@@ -162,6 +162,7 @@
         .border-magenta { border: 2px solid #FF00FF; box-shadow: 0 0 15px rgba(255, 0, 255, 0.2); }
         .border-yellow { border: 1px solid #FFFF00; box-shadow: 0 0 15px rgba(255, 255, 0, 0.15); }
         .border-green { border: 1px solid #00FF66; box-shadow: 0 0 15px rgba(0, 255, 102, 0.15); }
+        .border-orange { border: 1px solid #FF9900; box-shadow: 0 0 15px rgba(255, 153, 0, 0.15); }
 
         .section-title {
             font-size: 0.85rem;
@@ -191,16 +192,54 @@
             color: #FFFF00;
         }
 
+        .agent-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .agent-status {
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+
         .terminal-screen {
             background: #020202;
             border: 1px solid rgba(0, 210, 255, 0.3);
             padding: 10px;
-            height: 250px;
+            height: 280px;
             overflow-y: auto;
             font-size: 0.75rem;
             line-height: 1.4;
             color: #00D2FF;
             text-align: left;
+        }
+
+        .loader-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 5px;
+            background: rgba(0,0,0,0.4);
+            padding: 8px;
+            border: 1px dashed #00FF66;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(0, 255, 102, 0.2);
+            border-top: 3px solid #00FF66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .grid-panel {
@@ -211,7 +250,7 @@
         }
 
         @media (min-width: 550px) {
-            .grid-panel { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+            .grid-panel { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
         }
 
         .links-group {
@@ -302,7 +341,7 @@
         </div>
 
         <div class="top-bar">
-            <div>DIMENSION: 7000D SUPER-INTELLIGENT NET ARCHITECTURE</div>
+            <div>DIMENSION: 7000D LIVE SYSTEM RUNTIME ARCHITECTURE</div>
             <div class="lang-panel">
                 <button class="lang-btn" onclick="executeCommand('set-lang ENG')">ENG</button>
                 <button class="lang-btn" onclick="executeCommand('set-lang DE')">DE</button>
@@ -316,8 +355,19 @@
             
             <div class="side-panel">
                 
+                <div class="panel-box border-orange">
+                    <div class="section-title" style="color:#FF9900; border-color:#FF9900;">AGI CORE STATUS</div>
+                    <div class="status-text" style="color:#FF9900;">
+                        <div>MEMORY KERNEL: <span id="statusMem" style="color:#FFF;">READY</span></div>
+                        <div>AGENTS ENGINE: <span id="statusAge" style="color:#FFF;">ACTIVE</span></div>
+                        <div>NETWORK SECTOR: <span id="statusNet" style="color:#FFF;">CONNECTED</span></div>
+                        <div>MACHINE LEARNING: <span id="statusLrn" style="color:#FFF;">ACTIVE_STANDBY</span></div>
+                        <div>DATABASE ARCHIVE: <span id="statusDb" style="color:#FFF;">READY</span></div>
+                    </div>
+                </div>
+
                 <div class="panel-box border-magenta">
-                    <div class="section-title" style="color:#FF00FF; border-color:#FF00FF;">AGI OS MATRIX888 CORE</div>
+                    <div class="section-title" style="color:#FF00FF; border-color:#FF00FF;">AGI OS CORE DIRECTORY</div>
                     <div class="arch-list">
                         <div>└── AGI CORE ENGINE</div>
                         <div>    ├── MEMORY ENGINE</div>
@@ -334,37 +384,41 @@
                 </div>
 
                 <div class="panel-box border-yellow">
-                    <div class="section-title" style="color:#FFFF00; border-color:#FFFF00;">LIVE SYSTEM STATUS</div>
-                    <div class="status-text">
-                        <div>CPU CORE INDEX: <span id="cpuVal" style="color:#FFF;">32%</span></div>
-                        <div>MEMORY SECTOR: <span style="color:#00FF66;">ONLINE (20TB)</span></div>
-                        <div>VOICE STREAM:  <span style="color:#00FF66;">ACTIVE (ELAJA)</span></div>
-                        <div>AGENTS NETWORK: <span style="color:#00FF66;">6 CHANNELS</span></div>
-                        <div>SECURITY LEVEL: <span style="color:#00FF66;">MAX_INTEGRITY</span></div>
+                    <div class="section-title" style="color:#FFFF00; border-color:#FFFF00;">AGENT CONTROL (OSIRI LINE)</div>
+                    <div class="status-text" style="color:#FFFF00;">
+                        <div class="agent-line"><span>OSIRI MEMORY</span> <span class="agent-status" style="color:#00FF66;">🟢 ACTIVE</span></div>
+                        <div class="agent-line"><span>OSIRI NETWORK</span> <span class="agent-status" style="color:#00FF66;">🟢 ACTIVE</span></div>
+                        <div class="agent-line"><span>OSIRI BROWSER</span> <span class="agent-status" style="color:#00FF66;">🟢 ACTIVE</span></div>
+                        <div class="agent-line"><span>OSIRI VOICE</span> <span class="agent-status" style="color:#00FF66;">🟢 ACTIVE</span></div>
+                        <div class="agent-line"><span>OSIRI SECURITY</span> <span class="agent-status" style="color:#00FF66;">🟢 ACTIVE</span></div>
+                        <div class="agent-line"><span>OSIRI CODE</span> <span class="agent-status" style="color:#00FF66;">🟢 ACTIVE</span></div>
                     </div>
                 </div>
 
                 <div class="panel-box border-green">
-                    <div class="section-title" style="color:#00FF66; border-color:#00FF66;">AGI TASK MANAGER</div>
-                    <div class="status-text" style="color:#00FF66; font-size:0.75rem;">
-                        <div>[RUNNING] Agent Memory Core ..... OK</div>
-                        <div>[RUNNING] Agent Browser Engine ... OK</div>
-                        <div>[RUNNING] Agent Elaja Voice ...... OK</div>
-                        <div>[RUNNING] Agent Network Gateway ... OK</div>
-                        <div>[RUNNING] Security Matrix Core ... OK</div>
+                    <div class="section-title" style="color:#00FF66; border-color:#00FF66;">LIVE TELEMETRY MONITOR</div>
+                    <div class="status-text" style="color:#00FF66;">
+                        <div>CPU REACTION INDEX: <span id="cpuVal" style="color:#FFF;">28%</span></div>
+                        <div>LOCAL ALLOCATION:  <span style="color:#FFF;">20TB STORAGE</span></div>
+                        <div>STREAM FEED:        <span style="color:#FFF;">ELAJA_VOICE_STREAM</span></div>
+                        <div>INTEGRITY SYSTEM:   <span style="color:#FFF;">SECURE_MATRIX_PASS</span></div>
                     </div>
                 </div>
 
                 <div class="panel-box">
-                    <div class="section-title">AGI TERMINAL INTERFACE</div>
+                    <div class="section-title">AGI LIVE TERMINAL INTERFACE</div>
                     <div class="terminal-screen" id="termScreen">
-                        <div>[INIT] Модули ПК, Ноутбука и Мобильной версии активны.</div>
-                        <div>[INIT] Базы данных настроены: conversations.db, memory.db</div>
-                        <div style="color:#FFF;">[READY] Ожидание системных директив...</div>
+                        <div>[INIT] Модули ПК, Ноутбука, Планшета и Мобильной версии активны.</div>
+                        <div>[INIT] Инфраструктура развернута в глобальном сегменте.</div>
+                        <div style="color:#FFF;">[READY] Ожидание прямых директив управления...</div>
+                    </div>
+                    <div class="loader-box" id="loaderBox" style="display:none;">
+                        <div class="spinner" id="termSpinner"></div>
+                        <div id="loaderText" style="color:#00FF66; font-size:0.75rem; font-weight:bold;">INITIALIZING: 0%</div>
                     </div>
                     <div class="terminal-input-line">
-                        <span style="color:#00D2FF; margin-right:5px;">>&nbsp;</span>
-                        <input type="text" class="terminal-input" id="termInput" placeholder="Введите команду (например: scan-system)..." onkeydown="handleTerminal(event)">
+                        <span style="color:#00D2FF; margin-right:5px;">> </span>
+                        <input type="text" class="terminal-input" id="termInput" placeholder="Команды: start-memory, sync-network, scan-system..." onkeydown="handleTerminal(event)">
                     </div>
                 </div>
             </div>
@@ -372,17 +426,17 @@
             <div class="grid-panel">
                 
                 <div class="section-box" style="border-color:#00FF66; box-shadow:0 0 15px rgba(0,255,102,0.2);">
-                    <div class="section-title" style="color:#00FF66; border-color:#00FF66;">Главный Запуск Системы</div>
+                    <div class="section-title" style="color:#00FF66; border-color:#00FF66;">Центральный Контур Инициализации</div>
                     <div class="links-group">
-                        <button class="matrix-link btn-init" onclick="executeCommand('initialize-core')">INITIALIZE AGI CORE</button>
+                        <button class="matrix-link btn-init" onclick="executeCommand('initialize-core')">INITIALIZE AGI CORE SYSTEM</button>
                     </div>
                 </div>
 
                 <div class="section-box" style="border-color:#00FFFF; box-shadow:0 0 15px rgba(0,255,255,0.2);">
-                    <div class="section-title" style="color:#00FFFF; border-color:#00FFFF;">NOVA MATRIX AI / ССИИ 8.888</div>
+                    <div class="section-title" style="color:#00FFFF; border-color:#00FFFF;">Собственный Интеллект / ССИИ 8.888</div>
                     <div class="links-group">
-                        <button class="matrix-link" style="border-color:#00FFFF; color:#00FFFF;" onclick="executeCommand('start-search')">ЗАПУСТИТЬ УМНЫЙ ПОИСК NOVA</button>
-                        <button class="matrix-link" style="border-color:#00FFFF; color:#00FFFF;" onclick="executeCommand('start-camera')">АКТИВИРОВАТЬ ИИ-КАМЕРУ ССИИ</button>
+                        <button class="matrix-link" style="border-color:#00FFFF; color:#00FFFF;" onclick="executeCommand('start-search')">АКТИВИРОВАТЬ ПОИСК NOVA AI</button>
+                        <button class="matrix-link" style="border-color:#00FFFF; color:#00FFFF;" onclick="executeCommand('start-camera')">ПОДКЛЮЧИТЬ ИИ-КАМЕРУ ССИИ</button>
                     </div>
                 </div>
 
@@ -399,8 +453,8 @@
                 <div class="section-box">
                     <div class="section-title">Нейросети / API Hub</div>
                     <div class="links-group">
-                        <a href="https://chatgpt.com" target="_blank" class="matrix-link">ChatGPT Core</a>
-                        <a href="https://gemini.google.com" target="_blank" class="matrix-link">Gemini Engine</a>
+                        <a href="https://chatgpt.com" target="_blank" class="matrix-link">ChatGPT Pro</a>
+                        <a href="https://gemini.google.com" target="_blank" class="matrix-link">Gemini Core</a>
                         <a href="https://copilot.microsoft.com" target="_blank" class="matrix-link">Microsoft Copilot</a>
                         <a href="https://alice.yandex.ru" target="_blank" class="matrix-link">Яндекс Алиса</a>
                     </div>
@@ -430,7 +484,7 @@
                 <div class="section-box">
                     <div class="section-title">Медиа, Стриминг & Почта</div>
                     <div class="links-group">
-                        <a href="https://www.youtube.com" target="_blank" class="matrix-link color-media">YouTube Глобал</a>
+                        <a href="https://www.youtube.com" target="_blank" class="matrix-link color-media">YouTube Портал</a>
                         <a href="https://open.spotify.com" target="_blank" class="matrix-link color-media">Spotify Музыка</a>
                         <a href="https://mail.google.com" target="_blank" class="matrix-link">Gmail System</a>
                         <a href="https://mail.yandex.ru" target="_blank" class="matrix-link">Yandex Почта</a>
@@ -438,7 +492,7 @@
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Интеграция Робототехники</div>
+                    <div class="section-title">Робототехника & Системы</div>
                     <div class="links-group">
                         <a href="https://www.bostondynamics.com" target="_blank" class="matrix-link">Boston Dynamics</a>
                         <a href="https://www.tesla.com/optimus" target="_blank" class="matrix-link">Tesla Optimus Pro</a>
@@ -466,30 +520,28 @@
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Эволюция Системы (Этапы)</div>
+                    <div class="section-title">Платформа Памяти & Сети</div>
                     <div class="links-group">
-                        <button onclick="executeCommand('stage-info 1')" class="matrix-link color-stages">STAGE 1: Развертывание</button>
-                        <button onclick="executeCommand('stage-info 2')" class="matrix-link color-stages">STAGE 2: Интеллект</button>
-                        <button onclick="executeCommand('stage-info 3')" class="matrix-link color-stages">STAGE 3: Мобильность</button>
-                        <button onclick="executeCommand('stage-info 4')" class="matrix-link color-stages">STAGE 4: Индустрия</button>
+                        <button onclick="executeCommand('view-center memory')" class="matrix-link color-stages">MEMORY DATABASE CENTER</button>
+                        <button onclick="executeCommand('view-center network')" class="matrix-link color-stages">AGI NETWORK INFRASTRUCTURE</button>
                     </div>
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">OSIRI File Manager / Логи</div>
+                    <div class="section-title">Каталоги Памяти OSIRI</div>
                     <div class="links-group">
                         <button onclick="executeCommand('view-dir /projects')" class="matrix-link">Каталог: /projects</button>
                         <button onclick="executeCommand('view-dir /memory')" class="matrix-link">Каталог: /memory</button>
                         <button onclick="executeCommand('view-dir /agents')" class="matrix-link">Каталог: /agents</button>
-                        <button onclick="executeCommand('view-logs')" class="matrix-link">Показать SYSTEM LOGS</button>
+                        <button onclick="executeCommand('view-dir /logs')" class="matrix-link">Каталог: /logs</button>
                     </div>
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Elaja Voice Core</div>
+                    <div class="section-title">Elaja Voice & Эволюция</div>
                     <div class="links-group">
-                        <button onclick="executeCommand('voice-start')" class="matrix-link color-help">START VOICE ASSISTANT</button>
-                        <button onclick="executeCommand('voice-stop')" class="matrix-link color-media">STOP VOICE ASSISTANT</button>
+                        <button onclick="executeCommand('voice-start')" class="matrix-link">START VOICE SYSTEM</button>
+                        <button onclick="executeCommand('stage-info 1')" class="matrix-link">ПРОСМОТР СТАДИЙ ЭВОЛЮЦИИ</button>
                     </div>
                 </div>
 
@@ -542,12 +594,23 @@
         setInterval(drawMatrix, 33);
 
         const term = document.getElementById('termScreen');
-        
+        const lBox = document.getElementById('loaderBox');
+        const lSpinner = document.getElementById('termSpinner');
+        const lText = document.getElementById('loaderText');
+
+        function getTimeStamp() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            return "[" + h + ":" + m + ":" + s + "] ";
+        }
+
         function appendLog(text) {
             const div = document.createElement('div');
-            div.textContent = text;
+            div.textContent = getTimeStamp() + text;
             term.appendChild(div);
-            if(term.childNodes.length > 40) term.removeChild(term.firstChild);
+            if(term.childNodes.length > 50) term.removeChild(term.firstChild);
             term.scrollTop = term.scrollHeight;
         }
 
@@ -558,54 +621,89 @@
             appendLog("> " + cleanCmd);
 
             if(cleanCmd === 'initialize-core') {
-                appendLog("[SYSTEM] Инициализация AGI CORE ENGINE... Запуск модулей памяти...");
-                appendLog("[OK] conversations.db, memory.db, knowledge.db активны.");
-                appendLog("[STATUS] Все контуры подключены. Модули STAGE 1-4 переведены в режим ожидания.");
-                document.getElementById('globalStatus').textContent = "AGI_CORE_ACTIVE_READY";
+                lBox.style.display = 'flex';
+                lSpinner.style.opacity = '1';
+                lSpinner.style.display = 'block';
+                let count = 0;
+                
+                appendLog("[BOOT SEQUENCE STARTING] Инициализация контуров...");
+                
+                const interval = setInterval(() => {
+                    count += 4;
+                    lText.textContent = "AGI INITIALIZATION " + count + "%";
+                    
+                    if(count === 20) appendLog("INITIALIZING AGI CORE... [OK]");
+                    if(count === 48) appendLog("LOADING MEMORY MODULES (conversations.db / memory.db)... [OK]");
+                    if(count === 76) appendLog("CONNECTING NETWORK INFRASTRUCTURE (OSIRI CHANNELS)... [OK]");
+                    if(count === 92) appendLog("STARTING OSIRI SUB-AGENTS GRID... [OK]");
+
+                    if(count >= 100) {
+                        clearInterval(interval);
+                        lSpinner.style.display = 'none';
+                        lText.textContent = "AGI CORE SYSTEM FULLY ACTIVE";
+                        appendLog("[SUCCESS] Монолитное ядро успешно развернуто. Все шлюзы стабильны.");
+                        document.getElementById('globalStatus').textContent = "AGI_CORE_ACTIVE_READY";
+                        document.getElementById('statusMem').textContent = "ONLINE_SYNCHRONIZED";
+                        document.getElementById('statusAge').textContent = "ONLINE_6_CHANNELS";
+                        document.getElementById('statusNet').textContent = "GLOBAL_CONNECTED";
+                        document.getElementById('statusLrn').textContent = "DEEP_LEARNING_RUNNING";
+                    }
+                }, 150);
             } 
             else if(cleanCmd === 'scan-system') {
-                appendLog("[SCAN] Проверка компонентов ядра AGI OS...");
-                appendLog("[OK] MEMORY ENGINE - Стабилен. AGENT NETWORK - 6 активных агентов.");
-                appendLog("[OK] SECURITY CORE - Уровень защиты максимальный.");
+                appendLog("[SYSTEM LOG STREAM] Сканирование структуры...");
+                appendLog("[OK] Database layer: readiness 100%. Conversations, vector records synchronized.");
+                appendLog("[OK] Infrastructure status: active. CPU capacity optimized.");
             }
             else if(cleanCmd === 'start-memory') {
-                appendLog("[MEMORY] Запуск vector_memory.db... Хранилище целей и проектов синхронизировано.");
+                appendLog("[MEMORY CENTER] Обращение к vector_memory.db и knowledge.db...");
+                appendLog("[INFO] Хранилище целей, логов и задач развернуто в оперативной памяти браузера.");
+            }
+            else if(cleanCmd === 'initialize-agent') {
+                appendLog("[AGENT NETWORK] Перезапуск и инициализация распределенной сети агентов OSIRI...");
+                appendLog("[STATUS] Все 6 агентов (Memory, Network, Browser, Voice, Security, Code) получили статус ACTIVE.");
+            }
+            else if(cleanCmd === 'load-project') {
+                appendLog("[PROJECTS] Загрузка метаданных проекта 'AGI_OS_MATRIX888'...");
+                appendLog("[OK] Масштаб вычислений сопоставлен с текущими параметрами интерфейса.");
+            }
+            else if(cleanCmd === 'sync-network') {
+                appendLog("[NETWORK CENTER] Синхронизация глобальных шлюзов с репозиторием GitHub...");
+                appendLog("[SUCCESS] Соединение верифицировано серверами деплоя.");
             }
             else if(cleanCmd === 'start-search') {
-                appendLog("[NOVA AI] Запуск умной поисковой системы NOVA MATRIX AI...");
-                appendLog("[INFO] Подключение к распределенным глобальным шлюзам поиска выполнено.");
+                appendLog("[NOVA MATRIX AI] Развертывание сверхинтеллектуального шлюза умного поиска...");
                 window.open('https://www.google.com', '_blank');
             }
             else if(cleanCmd === 'start-camera') {
-                appendLog("[SSAI 8.888] Активация продвинутых алгоритмов компьютерного зрения...");
-                appendLog("[OK] Модуль визуального распознавания MATRIX CAMERA подключен.");
-                alert('Модуль визуального анализа NOVA CAMERA запущен в скрытом режиме.');
+                appendLog("[SSAI 8.888] Подключение алгоритмов компьютерного зрения и продвинутой камеры...");
+                alert('Модуль визуального слежения NOVA CAMERA запущен в скрытом режиме.');
             }
-            else if(cleanCmd.startsWith('stage-info')) {
-                const num = cleanCmd.split(' ')[1];
-                appendLog("[STAGE " + num + "] Запрос статуса фазы развития... Проверка зависимостей выполнена.");
-                alert("STAGE " + num + " полностью интегрирован в текущую схему интерфейса.");
+            else if(cleanCmd.startsWith('view-center')) {
+                const center = cleanCmd.split(' ')[1];
+                appendLog("[CENTER] Открытие интерфейса: AGI " + center.toUpperCase() + " SYSTEM...");
+                appendLog("[INFO] Все зависимости выведены в блоки телеметрии на главном экране.");
             }
             else if(cleanCmd.startsWith('view-dir')) {
                 const dir = cleanCmd.split(' ')[1];
-                appendLog("[FILE] Чтение каталога " + dir + "...");
-                appendLog("[INFO] Файлы структуры распределены во внутренней памяти репозитория.");
-            }
-            else if(cleanCmd === 'view-logs') {
-                appendLog("[LOG] Показ системного журнала: AGENT CREATED | NETWORK CONNECTED | MEMORY UPDATED");
+                appendLog("[OSIRI FILE MANAGER] Чтение каталога " + dir + "...");
+                appendLog("[OK] Обнаружена стабильная файловая структура.");
             }
             else if(cleanCmd === 'voice-start') {
-                appendLog("[VOICE] Запуск ELAJA VOICE CORE... Микрофонный шлюз открыт.");
+                appendLog("[VOICE CORE] Активация аудиопотока ELAJA VOICE STREAM... Шлюз открыт.");
             }
             else if(cleanCmd === 'voice-stop') {
-                appendLog("[VOICE] Elaja Voice Core переведен в режим энергосбережения.");
+                appendLog("[VOICE CORE] Аудиопоток приостановлен Архитектором.");
+            }
+            else if(cleanCmd.startsWith('stage-info')) {
+                appendLog("[ROADMAP] Чтение фаз эволюции: STAGE 1 (Развертывание), STAGE 2 (Интеллект), STAGE 3 (Мобильность), STAGE 4 (Индустрия) внедрены.");
             }
             else if(cleanCmd.startsWith('set-lang')) {
                 const lang = cleanCmd.split(' ')[1];
-                appendLog("[SYSTEM] Языковая панель переключена: " + lang);
+                appendLog("[SYSTEM] Языковая локализация переключена: " + lang);
             }
             else {
-                appendLog("[ERROR] Неизвестная команда ядра. Доступные: initialize-core, scan-system, start-memory, start-search, start-camera");
+                appendLog("[ERROR] Неизвестная команда ядра. Доступные: initialize-core, scan-system, start-memory, initialize-agent, load-project, sync-network");
             }
         }
 
@@ -617,11 +715,24 @@
             }
         }
 
-        // Симуляция динамики загрузки процессора
+        // Динамическая симуляция телеметрии процессора
         setInterval(() => {
-            const cpu = Math.floor(Math.random() * (45 - 20) + 20);
+            const cpu = Math.floor(Math.random() * (42 - 18) + 18);
             document.getElementById('cpuVal').textContent = cpu + "%";
-        }, 3000);
+        }, 2500);
+
+        // Поток случайных логов активности для ощущения "живой инфраструктуры"
+        setInterval(() => {
+            const logs = [
+                "SYSTEM LOG STREAM: Модули памяти vector_memory.db синхронизированы.",
+                "AGENT NETWORK FEED: Агент OSIRI NETWORK выполнил пинг внешних систем.",
+                "SECURITY CORE: Проверка целостности контуров завершена. Ошибок нет.",
+                "AGI TASK MANAGER: Процесс фонового логирования переведен в режим ожидания."
+            ];
+            if(document.getElementById('globalStatus').textContent === "AGI_CORE_ACTIVE_READY") {
+                appendLog(logs[Math.floor(Math.random() * logs.length)]);
+            }
+        }, 12000);
     </script>
 </body>
 </html>
