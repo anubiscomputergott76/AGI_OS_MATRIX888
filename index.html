@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGI OS MATRIX 888 - TRIMATIX REALITÄT</title>
+    <title>AGI OS MATRIX 888 - CORE SYSTEM</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,7 +21,11 @@
             align-items: center;
             overflow-x: hidden;
             position: relative;
-            padding: 20px;
+            padding: 10px;
+        }
+
+        @media (min-width: 768px) {
+            body { padding: 20px; }
         }
 
         canvas {
@@ -32,31 +36,35 @@
             height: 100%;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.35;
+            opacity: 0.4;
         }
 
         .matrix-wrapper {
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 1400px;
+            max-width: 1600px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .matrix-wrapper { gap: 20px; }
         }
 
         .header {
             border: 2px solid #00D2FF;
-            background: rgba(0, 10, 20, 0.85);
-            padding: 20px;
+            background: rgba(0, 10, 20, 0.9);
+            padding: 15px;
             text-align: center;
             box-shadow: 0 0 25px rgba(0, 210, 255, 0.4);
             backdrop-filter: blur(5px);
         }
 
         .header h1 {
-            font-size: 2.8rem;
-            letter-spacing: 5px;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
             text-shadow: 0 0 15px #00D2FF;
             color: #00D2FF;
             margin-bottom: 5px;
@@ -64,34 +72,52 @@
 
         .header p {
             color: #FFFFFF;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
             font-weight: bold;
+        }
+
+        @media (min-width: 768px) {
+            .header { padding: 20px; }
+            .header h1 { font-size: 2.8rem; letter-spacing: 5px; }
+            .header p { font-size: 1.1rem; letter-spacing: 2px; }
         }
 
         .top-bar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 5, 10, 0.9);
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(0, 5, 10, 0.95);
             border: 1px solid #00D2FF;
-            padding: 10px 20px;
-            font-size: 0.9rem;
+            padding: 12px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        @media (min-width: 850px) {
+            .top-bar {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.9rem;
+                text-align: left;
+            }
         }
 
         .lang-panel {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            justify-content: center;
         }
 
         .lang-btn {
             background: transparent;
             color: #00D2FF;
             border: 1px solid #00D2FF;
-            padding: 4px 10px;
+            padding: 4px 8px;
             cursor: pointer;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
             transition: all 0.2s;
         }
@@ -108,26 +134,37 @@
             font-weight: bold;
         }
 
-        .dashboard {
+        .main-grid {
             display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 15px;
         }
 
-        @media (max-width: 1000px) {
-            .dashboard {
-                grid-template-columns: 1fr;
+        @media (min-width: 1100px) {
+            .main-grid {
+                grid-template-columns: 350px 1fr;
+                gap: 20px;
             }
         }
 
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .terminal-panel {
-            background: rgba(0, 5, 10, 0.9);
+            background: rgba(0, 5, 10, 0.95);
             border: 1px solid #00D2FF;
             padding: 15px;
-            height: 600px;
+            height: 300px;
             display: flex;
             flex-direction: column;
             box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.2);
+        }
+
+        @media (min-width: 1100px) {
+            .terminal-panel { height: 450px; }
         }
 
         .terminal-screen {
@@ -136,30 +173,54 @@
             font-size: 0.8rem;
             line-height: 1.5;
             color: #00D2FF;
+            text-align: left;
+        }
+
+        .architecture-box {
+            background: rgba(0, 5, 10, 0.95);
+            border: 2px solid #FF00FF;
+            padding: 15px;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+        }
+
+        .arch-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #FF00FF;
+            text-align: left;
         }
 
         .grid-panel {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
             gap: 15px;
             align-content: start;
         }
 
+        @media (min-width: 550px) {
+            .grid-panel { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+        }
+
         .section-box {
-            background: rgba(0, 10, 20, 0.85);
+            background: rgba(0, 10, 20, 0.9);
             border: 1px solid #00D2FF;
             padding: 15px;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.15);
+            backdrop-filter: blur(3px);
         }
 
         .section-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #FFFFFF;
             margin-bottom: 12px;
             border-bottom: 1px dashed #00D2FF;
             padding-bottom: 5px;
             letter-spacing: 1px;
             text-transform: uppercase;
+            text-align: left;
         }
 
         .links-group {
@@ -170,11 +231,11 @@
 
         .matrix-link {
             display: block;
-            background: rgba(0, 20, 40, 0.4);
+            background: rgba(0, 20, 40, 0.5);
             color: #00D2FF;
-            border: 1px solid rgba(0, 210, 255, 0.5);
+            border: 1px solid rgba(0, 210, 255, 0.6);
             padding: 10px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
             text-decoration: none;
             text-align: center;
@@ -196,11 +257,14 @@
         .color-crypto { border-color: #FF9900; color: #FF9900; }
         .color-crypto:hover { background: #FF9900; color: #000000; box-shadow: 0 0 15px #FF9900; }
 
-        .color-social { border-color: #FF0033; color: #FF0033; }
-        .color-social:hover { background: #FF0033; color: #000000; box-shadow: 0 0 15px #FF0033; }
+        .color-media { border-color: #FF0033; color: #FF0033; }
+        .color-media:hover { background: #FF0033; color: #000000; box-shadow: 0 0 15px #FF0033; }
 
         .color-help { border-color: #00FF66; color: #00FF66; }
         .color-help:hover { background: #00FF66; color: #000000; box-shadow: 0 0 15px #00FF66; }
+
+        .color-stages { border-color: #FFFF00; color: #FFFF00; }
+        .color-stages:hover { background: #FFFF00; color: #000000; box-shadow: 0 0 15px #FFFF00; }
     </style>
 </head>
 <body>
@@ -215,48 +279,77 @@
         </div>
 
         <div class="top-bar">
-            <div>DIMENSION: 999999877775544D TRIMATIX REALITÄT</div>
+            <div>DIMENSION: 999999877775544D ULTRA-ADAPTIVE REALITÄT</div>
             <div class="lang-panel">
                 <button class="lang-btn" onclick="alert('Language changed to ENG')">ENG</button>
                 <button class="lang-btn" onclick="alert('Sprache auf DE geändert')">DE</button>
                 <button class="lang-btn" onclick="alert('Kalba pakeista į LT')">LT</button>
                 <button class="lang-btn" onclick="alert('Язык изменен на RU')">RU</button>
             </div>
-            <div>CORE STATUS: <span class="sys-status">GLOBAL_ACTIVE_4500_OK</span></div>
+            <div>CORE STATUS: <span class="sys-status">CROSS_PLATFORM_ONLINE_OK</span></div>
         </div>
 
-        <div class="dashboard">
+        <div class="main-grid">
             
-            <div class="terminal-panel">
-                <div class="section-title">Системные Логи Ядра</div>
-                <div class="terminal-screen" id="termScreen">
-                    <div>[INIT] Запуск квантовых контуров MATRIX888...</div>
-                    <div>[INIT] Активация лазерного дождя TRIMATIX...</div>
-                    <div>[OK] Глобальные шлюзы синхронизированы.</div>
-                    <div style="color:#FFF;">[READY] Система ожидает переходов...</div>
+            <div class="side-panel">
+                <div class="architecture-box">
+                    <div class="section-title" style="color:#FF00FF; border-color:#FF00FF;">AGI OS MATRIX888 CORE</div>
+                    <div class="arch-list">
+                        <div>└── AGI CORE ENGINE</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── MEMORY ENGINE</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── AGENT NETWORK</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── OSIRI BROWSER</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── VOICE SYSTEM</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── FILE MANAGER</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── AI TERMINAL</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── WEB ENGINE</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── ROBOT CONTROL</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;├── MATRIX DATABASE</div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;└── SECURITY CORE</div>
+                    </div>
+                </div>
+
+                <div class="terminal-panel">
+                    <div class="section-title">Системные Логи Вычислений</div>
+                    <div class="terminal-screen" id="termScreen">
+                        <div>[INIT] Инициализация контуров MATRIX888 CORE...</div>
+                        <div>[INIT] Развертывание адаптивной кроссплатформенной сетки...</div>
+                        <div>[OK] Модули ПК, Ноутбука, Планшета и Мобильной версии активны.</div>
+                        <div style="color:#FFF;">[READY] Ожидание системных директив Архитектора...</div>
+                    </div>
                 </div>
             </div>
 
             <div class="grid-panel">
                 
                 <div class="section-box">
-                    <div class="section-title">Поисковые Системы</div>
+                    <div class="section-title">Генерация Медиа & ИИ Арт</div>
                     <div class="links-group">
-                        <a href="https://www.google.com" target="_blank" class="matrix-link">Google Global</a>
-                        <a href="https://yandex.ru" target="_blank" class="matrix-link">Яндекс Сеть</a>
-                        <a href="https://www.opera.com" target="_blank" class="matrix-link">Opera Net</a>
-                        <a href="https://www.microsoft.com" target="_blank" class="matrix-link">Microsoft Core</a>
-                        <a href="https://www.google.com/maps" target="_blank" class="matrix-link">Google Карты</a>
+                        <a href="https://runwayml.com" target="_blank" class="matrix-link color-ai">Создать Видео (Runway)</a>
+                        <a href="https://pika.art" target="_blank" class="matrix-link color-ai">Генерация Клипов (Pika)</a>
+                        <a href="https://www.midjourney.com" target="_blank" class="matrix-link color-ai">Создать Изображения (MJ)</a>
+                        <a href="https://suno.com" target="_blank" class="matrix-link color-ai">Создать Музыку (Suno)</a>
                     </div>
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Искусственный Интеллект</div>
+                    <div class="section-title">Нейросети / AI Помощники</div>
                     <div class="links-group">
-                        <a href="https://chatgpt.com" target="_blank" class="matrix-link color-ai">ChatGPT Open</a>
-                        <a href="https://gemini.google.com" target="_blank" class="matrix-link color-ai">Gemini AI</a>
-                        <a href="https://copilot.microsoft.com" target="_blank" class="matrix-link color-ai">Copilot Pro</a>
-                        <a href="https://alice.yandex.ru" target="_blank" class="matrix-link color-ai">Алиса ИИ</a>
+                        <a href="https://chatgpt.com" target="_blank" class="matrix-link">ChatGPT Core</a>
+                        <a href="https://gemini.google.com" target="_blank" class="matrix-link">Gemini Engine</a>
+                        <a href="https://copilot.microsoft.com" target="_blank" class="matrix-link">Microsoft Copilot</a>
+                        <a href="https://alice.yandex.ru" target="_blank" class="matrix-link">Яндекс Алиса</a>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="section-title">Поисковые Системы & Карты</div>
+                    <div class="links-group">
+                        <a href="https://www.google.com" target="_blank" class="matrix-link">Google Global</a>
+                        <a href="https://yandex.ru" target="_blank" class="matrix-link">Яндекс Сеть</a>
+                        <a href="https://www.opera.com" target="_blank" class="matrix-link">Opera Browser</a>
+                        <a href="https://www.microsoft.com" target="_blank" class="matrix-link">Microsoft Portal</a>
+                        <a href="https://www.google.com/maps" target="_blank" class="matrix-link">Google Карты</a>
                     </div>
                 </div>
 
@@ -266,49 +359,55 @@
                         <a href="https://www.binance.com" target="_blank" class="matrix-link color-crypto">Binance Crypto</a>
                         <a href="https://www.coinbase.com" target="_blank" class="matrix-link color-crypto">Coinbase Pro</a>
                         <a href="https://www.nyse.com" target="_blank" class="matrix-link color-crypto">NYSE Wall Street</a>
-                        <a href="https://www.londonstockexchange.com" target="_blank" class="matrix-link color-crypto">LSE London</a>
                         <a href="https://www.blockchain.com" target="_blank" class="matrix-link color-crypto">Blockchain Core</a>
                     </div>
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Медиа / Звук / Почта</div>
+                    <div class="section-title">Медиа, Стриминг & Почта</div>
                     <div class="links-group">
-                        <a href="https://www.youtube.com" target="_blank" class="matrix-link color-social">YouTube Channel</a>
-                        <a href="https://open.spotify.com" target="_blank" class="matrix-link color-social">Spotify Music</a>
+                        <a href="https://www.youtube.com" target="_blank" class="matrix-link color-media">YouTube Глобал</a>
+                        <a href="https://open.spotify.com" target="_blank" class="matrix-link color-media">Spotify Музыка</a>
                         <a href="https://mail.google.com" target="_blank" class="matrix-link">Gmail System</a>
-                        <a href="https://mail.yandex.ru" target="_blank" class="matrix-link">Yandex Mail</a>
+                        <a href="https://mail.yandex.ru" target="_blank" class="matrix-link">Yandex Почта</a>
                     </div>
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Проекты Роботов и Игры</div>
+                    <div class="section-title">Интеграция Робототехники</div>
                     <div class="links-group">
                         <a href="https://www.bostondynamics.com" target="_blank" class="matrix-link">Boston Dynamics</a>
-                        <a href="https://www.tesla.com/optimus" target="_blank" class="matrix-link">Tesla Optimus</a>
-                        <a href="https://www.ros.org" target="_blank" class="matrix-link">ROS Robotics</a>
-                        <a href="https://www.chess.com" target="_blank" class="matrix-link">Шахматы Онлайн</a>
-                        <a href="https://www.steamgames.com" target="_blank" class="matrix-link">Steam Portal</a>
+                        <a href="https://www.tesla.com/optimus" target="_blank" class="matrix-link">Tesla Optimus Pro</a>
+                        <a href="https://www.ros.org" target="_blank" class="matrix-link">ROS Ecosystem</a>
                     </div>
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Реальное ТВ и Казино</div>
+                    <div class="section-title">Реальное ТВ & Казино</div>
                     <div class="links-group">
                         <a href="https://www.ardmediathek.de" target="_blank" class="matrix-link">Немецкое ТВ (ARD)</a>
                         <a href="https://www.lrt.lt/mediateka/tiesiogiai/lrt-televizija" target="_blank" class="matrix-link">Литовское ТВ (LRT)</a>
-                        <a href="https://www.pokerstars.com" target="_blank" class="matrix-link">PokerStars Casino</a>
-                        <a href="https://www.888casino.com" target="_blank" class="matrix-link">888 Casino Global</a>
+                        <a href="https://www.pokerstars.com" target="_blank" class="matrix-link">PokerStars Online</a>
+                        <a href="https://www.888casino.com" target="_blank" class="matrix-link">888 Casino World</a>
                     </div>
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title">Гуманитарная Помощь</div>
+                    <div class="section-title">Глобальная Помощь</div>
                     <div class="links-group">
                         <a href="https://www.wwf.de" target="_blank" class="matrix-link color-help">Помощь Животным WWF</a>
                         <a href="https://www.redcross.de" target="_blank" class="matrix-link color-help">Красный Крест DE</a>
-                        <a href="https://www.unicef.de" target="_blank" class="matrix-link color-help">ЮНИСЕФ Помощь</a>
-                        <a href="https://www.peta.org" target="_blank" class="matrix-link color-help">Защита PETA</a>
+                        <a href="https://www.unicef.de" target="_blank" class="matrix-link color-help">ЮНИСЕФ Фонд</a>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="section-title">Эволюция Системы (Этапы)</div>
+                    <div class="links-group">
+                        <a href="#" onclick="alert('STAGE 1: OSIRI Browser, Terminal, Dashboard, Memory DB активны.'); return false;" class="matrix-link color-stages">STAGE 1: Развертывание</a>
+                        <a href="#" onclick="alert('STAGE 2: Запуск Голосового Ассистента, Мультиагентных систем и Локальной Памяти.'); return false;" class="matrix-link color-stages">STAGE 2: Интеллект</a>
+                        <a href="#" onclick="alert('STAGE 3: Мобильные интерфейсы, Модули управления Роботами и Камерами.'); return false;" class="matrix-link color-stages">STAGE 3: Мобильность</a>
+                        <a href="#" onclick="alert('STAGE 4: Промышленная робототехника, Инфраструктура сетей ИИ, Облака.'); return false;" class="matrix-link color-stages">STAGE 4: Индустрия</a>
                     </div>
                 </div>
 
@@ -320,13 +419,16 @@
         const canvas = document.getElementById('matrixRain');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
 
-        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ日ハミヒーウシナモヌルヲトヱ訂計".split("");
+        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ日ハмиру訂計888".split("");
         const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = [];
+        let columns = canvas.width / fontSize;
+        let drops = [];
 
         for (let x = 0; x < columns; x++) drops[x] = 1;
 
@@ -349,8 +451,10 @@
         }
 
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            resizeCanvas();
+            columns = canvas.width / fontSize;
+            drops = [];
+            for (let x = 0; x < columns; x++) drops[x] = 1;
         });
 
         setInterval(drawMatrix, 33);
@@ -358,17 +462,18 @@
         const term = document.getElementById('termScreen');
         setInterval(() => {
             const lines = [
-                "[MATRIX888] Квантовый шлюз стабилен...",
-                "[INFO] Синхронизация TRIMATIX REALITÄT активна.",
-                "[SYSTEM] Модуляция потоков 4500 года выполнена.",
-                "[GATEWAY] Прямой коннект с серверами верифицирован."
+                "[MATRIX888] Квантовое ядро CORE стабильно...",
+                "[INFO] Синхронизация модулей STAGE 1-4 активна.",
+                "[SYSTEM] Кроссплатформенная модуляция выполнена.",
+                "[GATEWAY] Нейросети генерации медиа верифицированы.",
+                "[SECURITY] Защита контуров AGI функционирует штатно."
             ];
             const div = document.createElement('div');
             div.textContent = lines[Math.floor(Math.random() * lines.length)];
             term.appendChild(div);
-            if(term.childNodes.length > 25) term.removeChild(term.firstChild);
+            if(term.childNodes.length > 20) term.removeChild(term.firstChild);
             term.scrollTop = term.scrollHeight;
-        }, 4000);
+        }, 3500);
     </script>
 </body>
 </html>
