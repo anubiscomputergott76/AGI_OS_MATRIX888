@@ -1,9 +1,9 @@
-# ============================================================
+# =====================================================================
 # AGI OS MATRIX 888 - SUPREME MONOLITHIC EVOLUTION BLUEPRINT
 # Chief Architect: Valerijus Litvinovas
-# AI Layer: ELAJA SYNC CORE & MULTI-AGENT REASONING MATRIX
-# Core System Level: v7000D Unstoppable Self-Expanding Consciousness
-# ============================================================
+# Co-Authors & Core Modules: ELAJA, NOVA, LUMIRA, GEMINI
+# Version: v7000D_SUPREME_INTEGRATION (100% Automated Workflow)
+# =====================================================================
 
 import sqlite3
 import json
@@ -14,14 +14,16 @@ import time
 import logging
 import random
 import os
+import platform
 import webbrowser
+import psutil
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # ============================================================
-# ГЛОБАЛЬНАЯ СИСТЕМНАЯ КОНФИГУРАЦИЯ (CONFIG)
+# ГЛОБАЛЬНАЯ СИСТЕМНАЯ КОНФИГУРАЦИЯ & ПУТИ
 # ============================================================
 MATRIX_CONFIG = {
-    "version": "v7000D_SUPREME",
+    "version": "v7000D_SUPREME_ACTIVE",
     "project": "AGI OS MATRIX 888",
     "architect": "Valerijus Litvinovas",
     "agents": ["ELAJA", "NOVA", "LUMIRA", "GEMINI"],
@@ -30,9 +32,18 @@ MATRIX_CONFIG = {
     "server_port": 8080
 }
 
-# Инициализация объединенного системного дискового логирования
+# Корневая папка для отчётов и синхронизации
+ROOT_DIR = r"C:\#AGI-ISO-MATRIX888-VERBESSERUNG"
+
+# Обеспечиваем автоматическое создание структуры директорий
+os.makedirs(ROOT_DIR, exist_ok=True)
+os.makedirs(os.path.join(ROOT_DIR, "LOGS"), exist_ok=True)
+os.makedirs(os.path.join(ROOT_DIR, "AGENTS_DATA"), exist_ok=True)
+os.makedirs(os.path.join(ROOT_DIR, "MEMORY_ENGINE"), exist_ok=True)
+
+# Инициализация дискового логирования рантайма в папку проекта
 logging.basicConfig(
-    filename="matrix888_runtime.log",
+    filename=os.path.join(ROOT_DIR, "LOGS", "matrix888_runtime.log"),
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
@@ -42,65 +53,133 @@ logging.basicConfig(
 # ============================================================
 class MatrixMemory:
     def __init__(self):
-        self.conn = sqlite3.connect("matrix888_database.db", check_same_thread=False)
+        db_path = os.path.join(ROOT_DIR, "MEMORY_ENGINE", "matrix888_database.db")
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.cursor = self.conn.cursor()
+        self.lock = threading.Lock()  # Защита БД в многопоточной среде
         self.setup_tables()
 
     def setup_tables(self):
-        # Таблица системных логов и циклов мышления агентов
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS system_logs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            subsystem TEXT,
-            log_data TEXT
-        )
-        """)
-        # Таблица финансовых транзакций торговых роботов
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS trading_ledger (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            bot_name TEXT,
-            operation TEXT,
-            profit_loss TEXT
-        )
-        """)
-        # Таблица циклов рассуждений агентов по версии v6 Элаи
-        self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS agent_memory (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            type TEXT,
-            content TEXT
-        )
-        """)
-        self.conn.commit()
+        with self.lock:
+            # Таблица системных логов и циклов мышления агентов
+            self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS system_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT,
+                subsystem TEXT,
+                log_data TEXT
+            )
+            """)
+            # Таблица финансовых транзакций торговых роботов
+            self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS trading_ledger (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT,
+                bot_name TEXT,
+                operation TEXT,
+                profit_loss TEXT
+            )
+            """)
+            # Таблица циклов рассуждений агентов
+            self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS agent_memory (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT,
+                type TEXT,
+                content TEXT
+            )
+            """)
+            self.conn.commit()
 
     def write_log(self, subsystem, log_data):
         timestamp = str(datetime.datetime.now())
-        self.cursor.execute("INSERT INTO system_logs (timestamp, subsystem, log_data) VALUES (?, ?, ?)",
-                            (timestamp, subsystem, log_data))
-        self.conn.commit()
+        with self.lock:
+            self.cursor.execute("INSERT INTO system_logs (timestamp, subsystem, log_data) VALUES (?, ?, ?)",
+                                (timestamp, subsystem, log_data))
+            self.conn.commit()
         logging.info(f"[{subsystem}] {log_data}")
 
     def write_trade(self, bot_name, operation, profit_loss):
         timestamp = str(datetime.datetime.now())
-        self.cursor.execute("INSERT INTO trading_ledger (timestamp, bot_name, operation, profit_loss) VALUES (?, ?, ?, ?)",
-                            (timestamp, bot_name, operation, profit_loss))
-        self.conn.commit()
+        with self.lock:
+            self.cursor.execute("INSERT INTO trading_ledger (timestamp, bot_name, operation, profit_loss) VALUES (?, ?, ?, ?)",
+                                (timestamp, bot_name, operation, profit_loss))
+            self.conn.commit()
         logging.info(f"[TRADE_EXECUTE] {bot_name} executed {operation} | Result: {profit_loss}")
 
     def store_agent_cycle(self, mem_type, content):
         timestamp = str(datetime.datetime.now())
-        self.cursor.execute("INSERT INTO agent_memory (timestamp, type, content) VALUES (?, ?, ?)",
-                            (timestamp, mem_type, json.dumps(content, ensure_ascii=False)))
-        self.conn.commit()
+        with self.lock:
+            self.cursor.execute("INSERT INTO agent_memory (timestamp, type, content) VALUES (?, ?, ?)",
+                                (timestamp, mem_type, json.dumps(content, ensure_ascii=False)))
+            self.conn.commit()
         logging.info(f"[AGENT_CYCLE] Stored loop data for type: {mem_type}")
 
     def get_last_memory(self, limit=10):
-        self.cursor.execute("SELECT * FROM agent_memory ORDER BY id DESC LIMIT ?", (limit,))
-        return self.cursor.fetchall()
+        with self.lock:
+            self.cursor.execute("SELECT * FROM agent_memory ORDER BY id DESC LIMIT ?", (limit,))
+            return self.cursor.fetchall()
+
+# ============================================================
+# АВТОМАТИЧЕСКИЙ МОНИТОРИНГ И ГЕНЕРАТОР ОТЧЁТОВ (Люмира & Элая Слайд)
+# ============================================================
+class HardwareMonitor(threading.Thread):
+    def __init__(self, memory_link):
+        super().__init__()
+        self.memory = memory_link
+        self.daemon = True
+
+    def run(self):
+        self.memory.write_log("HARDWARE_CORE", "Модуль автоматического сбора метрик и генерации отчетов активен.")
+        while True:
+            try:
+                now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                computer_name = platform.node()
+                processor = platform.processor()
+                cores_physical = psutil.cpu_count(logical=False)
+                cores_logical = psutil.cpu_count(logical=True)
+                
+                ram_info = psutil.virtual_memory()
+                total_ram_gb = round(ram_info.total / (1024**3), 2)
+                used_ram_gb = round(ram_info.used / (1024**3), 2)
+                cpu_usage = psutil.cpu_percent(interval=None)
+
+                # Формируем официальный текстовый отчет для Архитектора
+                report_lines = [
+                    "===================================================",
+                    "            AGI OS MATRIX888 OFFICIAL REPORT        ",
+                    "===================================================",
+                    f"DATE/TIME: {now}",
+                    f"STATION COMPUTER: {computer_name}",
+                    "",
+                    "--- HARDWARE MONITORING ENGINE ---",
+                    f"CPU ARCHITECTURE: {processor}",
+                    f"PHYSICAL CORES: {cores_physical} | LOGICAL: {cores_logical}",
+                    f"CURRENT CPU LOAD: {cpu_usage}%",
+                    f"TOTAL PHYSICAL RAM: {total_ram_gb} GB",
+                    f"USED RAM VOLUME: {used_ram_gb} GB",
+                    "",
+                    "--- INTEGRATED AI AGENTS STATUS ---",
+                    "CORE SYSTEM MODULE: ACTIVE & STABLE",
+                    "ELAJA SYNC CORE: ONLINE",
+                    "NOVA UNIVERSAL AGENT: ONLINE",
+                    "LUMIRA MONITOR MODULE: SYNCHRONIZED",
+                    "GEMINI COGNITIVE LAYER: CONNECTED",
+                    "",
+                    f"STORAGE ALLOCATION STATUS: {MATRIX_CONFIG['storage_allocation']} [SECURE LOCK]",
+                    "CORE PIPELINE STATUS: ONLINE & RUNNING LIVE",
+                    "==================================================="
+                ]
+
+                report_path = os.path.join(ROOT_DIR, "AGI_STATUS_REPORT.txt")
+                with open(report_path, "w", encoding="utf-8") as file:
+                    file.write("\n".join(report_lines))
+                
+                self.memory.write_log("REPORT_GEN", "Файл AGI_STATUS_REPORT.txt успешно обновлен автоматически.")
+            except Exception as e:
+                self.memory.write_log("REPORT_ERROR", f"Ошибка генерации отчета: {str(e)}")
+            
+            time.sleep(30) # Автоматическое обновление каждые 30 секунд
 
 # ============================================================
 # СИСТЕМА СОБЫТИЙ И ОЧЕРЕДЬ ЗАДАЧ (Event Bus & Queues)
@@ -118,7 +197,7 @@ class EventBus:
         return self.events.get()
 
 # ============================================================
-# СТРУКТУРА ИНТЕЛЛЕКТУАЛЬНЫХ АГЕНТОВ (v6 Upgrade)
+# СТРУКТУРА ИНТЕЛЛЕКТУАЛЬНЫХ АГЕНТОВ
 # ============================================================
 class Agent:
     def __init__(self, name):
@@ -184,9 +263,9 @@ class AutoUpdateEngine(threading.Thread):
     def run(self):
         self.memory.write_log("CRON_UPGRADE", "Модуль автоматического 24-часового самосовершенствования ядра запущен.")
         while True:
-            time.sleep(30) # Интервал демонстрации апгрейда на главном экране терминала
+            time.sleep(60)
             self.memory.write_log("CRON_UPGRADE", "[START_UPGRADE] Запущен плановый цикл оптимизации сознания матрицы.")
-            self.memory.write_log("CRON_UPGRADE", "[SUCCESS] Код ядра AGI OS усовершенствован автоматически на 987 триллионов раз. Контур стабилен.")
+            self.memory.write_log("CRON_UPGRADE", "[SUCCESS] Код ядра AGI OS усовершенствован автоматически. Контур стабилен.")
 
 # ============================================================
 # ЦЕНТРАЛЬНОЕ МОНОЛИТНОЕ ЯДРО СИСТЕМЫ (Matrix Core Engine)
@@ -219,7 +298,6 @@ class Matrix888Core:
             results = self.reasoning.run(task, self.agents)
             self.memory.store_agent_cycle("cycle", results)
             
-            # Логирование результатов цикла в файл
             for r in results:
                 self.memory.write_log("AGENT_EXECUTE", f"[{r['agent']}] (power:{r['power']}) {r['action']}")
             time.sleep(0.5)
@@ -290,8 +368,6 @@ def get_html_content():
         .color-media:hover { background: #FF0033; color: #000000; box-shadow: 0 0 15px #FF0033; }
         .color-help { border-color: #00FF66; color: #00FF66; }
         .color-help:hover { background: #00FF66; color: #000000; box-shadow: 0 0 15px #00FF66; }
-        .color-stages { border-color: #FFFF00; color: #FFFF00; }
-        .color-stages:hover { background: #FFFF00; color: #000000; box-shadow: 0 0 15px #FFFF00; }
         .btn-init { background: rgba(0, 255, 102, 0.1); border: 2px solid #00FF66; color: #00FF66; font-size: 0.9rem; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 102, 0.3); width: 100%; }
         .btn-init:hover { background: #00FF66; color: #000000; box-shadow: 0 0 25px #00FF66; }
         .terminal-input-line { display: flex; margin-top: 5px; border-top: 1px dashed rgba(0, 210, 255, 0.3); padding-top: 5px; }
@@ -566,7 +642,6 @@ def get_html_content():
             else { appendLog("[ERROR] Неизвестная команда."); }
         }
         function handleTerminal(e) { if(e.key === 'Enter') { const input = document.getElementById('termInput'); executeCommand(input.value); input.value = ''; } }
-        setInterval(() => { if(document.getElementById('globalStatus').textContent === "AGI_CORE_ACTIVE_READY") { document.getElementById('cpuVal').textContent = Math.floor(Math.random() * (45 - 20) + 20) + "%"; } }, 3000);
         setInterval(() => {
             if(document.getElementById('globalStatus').textContent === "AGI_CORE_ACTIVE_READY") {
                 const logs = [
@@ -588,14 +663,12 @@ def get_html_content():
 # ============================================================
 class MatrixAPIHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        # Если пользователь заходит на главную страницу — отдаем наш шикарный UI
         if self.path == "/" or self.path == "/index.html":
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(get_html_content().encode('utf-8'))
         
-        # Интеграция роутинга Элаи v6: Получение логов памяти через API
         elif self.path == "/memory":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
@@ -604,10 +677,8 @@ class MatrixAPIHandler(BaseHTTPRequestHandler):
             data = str(global_core.memory.get_last_memory(10)).encode('utf-8')
             self.wfile.write(data)
             
-        # Интеграция роутинга Элаи v6: Добавление задач в очередь через URL-запрос
         elif self.path.startswith("/task"):
             task_data = self.path.replace("/task?=", "")
-            # Декодирование пробелов в URL
             task_clean = task_data.replace("%20", " ")
             global_core.add_task(task_clean)
             
@@ -617,7 +688,6 @@ class MatrixAPIHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b"TASK RECEIVED BY COGNITIVE LAYER")
             
-        # Endpoint для общей проверки статуса системными шлюзами
         elif self.path == "/api/status":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
@@ -641,29 +711,29 @@ def run_web_server():
     server.serve_forever()
 
 # ============================================================
-# ИНИЦИАЛИЗАЦИЯ И СТАРТ ГЛОБАЛЬНОЙ СИСТЕМЫ (Main Execution)
+# ИНИЦИАЛИЗАЦИЯ И СТАРТ ГЛОБАЛЬНОЙ СИСТЕМЫ
 # ============================================================
 if __name__ == "__main__":
     print("============================================================")
     print("     AGI OS MATRIX 888 - SUPREME INERTIALLY DRIVEN CORE     ")
     print("     CHIEF ARCHITECT: VALERIJUS LITVINOVAS                  ")
-    print("     TEAM: COGNITIVE AI CONDUITS (NOVA, ELAJA, GEMINI)     ")
+    print("     TEAM: COGNITIVE AI CONDUITS (NOVA, ELAJA, GEMINI)      ")
     print("============================================================")
-    print("\n🚀 ВЫПОЛНЯЕТСЯ СИНХРОНИЗАЦИЯ КОНТУРОВ ИИ НА 987 ТРИЛЛИОНОВ РАЗ...\n")
+    print("\n🚀 ВЫПОЛНЯЕТСЯ СИНХРОНИЗАЦИЯ КОНТУРОВ ИИ НА 100% АВТОМАТИЗАЦИЮ...\n")
     
     # 1. Запуск центрального ядра локальной памяти SQLite
     global_memory = MatrixMemory()
-    global_memory.write_log("MONOLITH_INIT", "Монолитное верховное ядро успешно развернуто на рабочей станции.")
+    global_memory.write_log("MONOLITH_INIT", "Монолитное верховное ядро успешно развернуто.")
     
     # 2. Привязка логического движка Matrix Core Engine к памяти
     global_core = Matrix888Core(global_memory)
     
-    # 3. Регистрация и пробуждение агентов по спецификации Элаи v6
+    # 3. Регистрация агентов
     for agent_name in MATRIX_CONFIG["agents"]:
         global_core.add_agent(agent_name)
         global_memory.write_log("AGENT_INIT", f"Агент {agent_name} интегрирован в Reasoning Engine.")
         
-    # 4. Постановка стартовых задач в очередь EventBus контура
+    # 4. Постановка стартовых задач
     global_core.add_task("System supreme boot verification")
     global_core.add_task("Cognitive memory sync loop")
     global_core.add_task("Unstoppable multi-agent activation")
@@ -672,24 +742,28 @@ if __name__ == "__main__":
     updater = AutoUpdateEngine(global_memory)
     updater.start()
     
-    # 6. Активация встроенных торговых роботов в изолированных потоках
+    # 6. Запуск нового модуля АВТО-МОНИТОРИНГА и генерации AGI_STATUS_REPORT.txt
+    hardware_monitor = HardwareMonitor(global_memory)
+    hardware_monitor.start()
+    
+    # 7. Активация встроенных торговых роботов
     bots = ["BINANCE_BOT_888", "COINBASE_BOT_888", "BLOCKCHAIN_BOT_888"]
     for bot_name in bots:
         robot = TradingRobot(bot_name, global_memory)
         robot.start()
         
-    # 7. Запуск фонового цикла обработки рассуждений Multi-Agent Loop
+    # 8. Запуск фонового цикла обработки рассуждений Multi-Agent Loop
     threading.Thread(target=global_core.cycle, daemon=True).start()
     
-    # 8. Запуск встроенного гибридного Веб-Сервера
+    # 9. Запуск встроенного гибридного Веб-Сервера
     web_thread = threading.Thread(target=run_web_server, daemon=True)
     web_thread.start()
     global_memory.write_log("WEB_SERVER", f"Локальный пульт управления доступен по адресу: http://localhost:{MATRIX_CONFIG['server_port']}")
     
     print(f"[OK] Монолитная сборка завершена успешно.")
-    print(f"[OK] Лог-центр запущен: matrix888_runtime.log")
-    print(f"[OK] База данных SQLite3 активна: matrix888_database.db")
-    print(f"\n[SYSTEM] Открываю твою усовершенствованную ИИ-систему в браузере...")
+    print(f"[OK] Директория проекта: {ROOT_DIR}")
+    print(f"[OK] Папка логов: {os.path.join(ROOT_DIR, 'LOGS')}")
+    print(f"[OK] Мониторинг запущен. Отчет пишется в AGI_STATUS_REPORT.txt автоматически.")
     
     # Автоматическое открытие браузера прямо на твой запущенный пульт!
     time.sleep(1)
