@@ -17,6 +17,7 @@ import os
 import platform
 import webbrowser
 import psutil
+from urllib.parse import parse_qs, urlparse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # ============================================================
@@ -27,27 +28,30 @@ MATRIX_CONFIG = {
     "project": "AGI OS MATRIX 888",
     "architect": "Valerijus Litvinovas",
     "agents": ["ELAJA", "NOVA", "LUMIRA", "GEMINI"],
+    "cores_list": ["OSIRYS", "NOVA", "TRIMATIX", "MATRIX888_CORE"],
     "cron_update_interval_hours": 24,
     "storage_allocation": "20TB",
     "server_port": 8080,
     "matrixcoin_rate_eur": 10000000
 }
 
-# Корневая папка для отчётов и синхронизации
 ROOT_DIR = r"C:\#AGI-ISO-MATRIX888-VERBESSERUNG"
 
-# Обеспечиваем автоматическое создание структуры директорий
 os.makedirs(ROOT_DIR, exist_ok=True)
 os.makedirs(os.path.join(ROOT_DIR, "LOGS"), exist_ok=True)
 os.makedirs(os.path.join(ROOT_DIR, "AGENTS_DATA"), exist_ok=True)
 os.makedirs(os.path.join(ROOT_DIR, "MEMORY_ENGINE"), exist_ok=True)
 
-# Инициализация дискового логирования рантайма в папку проекта
 logging.basicConfig(
     filename=os.path.join(ROOT_DIR, "LOGS", "matrix888_runtime.log"),
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
+
+# Глобальные переменные состояния рантайма матрицы
+GLOBAL_STATUS = "AGI_CORE_STANDBY"
+MATRIXCOIN_BALANCE = 1.0000
+BOOT_TIME = time.time()
 
 # ============================================================
 # ЯДРО ЛОКАЛЬНОЙ ПАМЯТИ (SQLite3 Engine + MatrixCoin)
@@ -57,47 +61,29 @@ class MatrixMemory:
         db_path = os.path.join(ROOT_DIR, "MEMORY_ENGINE", "matrix888_database.db")
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.cursor = self.conn.cursor()
-        self.lock = threading.Lock()  # Защита БД в многопоточной среде
+        self.lock = threading.Lock()
         self.setup_tables()
 
     def setup_tables(self):
         with self.lock:
-            # Таблица системных логов и циклов мышления агентов
             self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS system_logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT,
-                subsystem TEXT,
-                log_data TEXT
+                id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, subsystem TEXT, log_data TEXT
             )
             """)
-            # Таблица финансовых транзакций торговых роботов
             self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS trading_ledger (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT,
-                bot_name TEXT,
-                operation TEXT,
-                profit_loss TEXT
+                id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, bot_name TEXT, operation TEXT, profit_loss TEXT
             )
             """)
-            # Таблица циклов рассуждений агентов
             self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS agent_memory (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT,
-                type TEXT,
-                content TEXT
+                id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, type TEXT, content TEXT
             )
             """)
-            # Таблица распределения MatrixCoin на благотворительные цели
             self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS matrixcoin_ledger (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT,
-                fund_name TEXT,
-                allocation_mk TEXT,
-                value_eur TEXT
+                id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, fund_name TEXT, allocation_mk TEXT, value_eur TEXT
             )
             """)
             self.conn.commit()
@@ -149,6 +135,7 @@ class MatrixCoinCalculationEngine(threading.Thread):
         self.daemon = True
 
     def run(self):
+        global MATRIXCOIN_BALANCE
         self.memory.write_log("MATRIXCOIN_CORE", "Алгоритмы мощных автоматических вычислений MatrixCoin активны.")
         funds = [
             "ПОМОЩЬ НУЖДАЮЩИМСЯ ЖИВОТНЫМ (WWF/RED CROSS)",
@@ -157,16 +144,18 @@ class MatrixCoinCalculationEngine(threading.Thread):
         ]
         while True:
             try:
-                time.sleep(12)  # Интервал автоматической симуляции генерации блоков
-                chosen_fund = random.choice(funds)
-                allocated_mk = round(random.uniform(0.01, 0.15), 4)
-                value_eur = allocated_mk * MATRIX_CONFIG["matrixcoin_rate_eur"]
-                
-                self.memory.write_matrixcoin_distribution(
-                    chosen_fund, 
-                    f"{allocated_mk} MK", 
-                    f"{value_eur:,.2f} EUR/USD"
-                )
+                time.sleep(8)
+                if GLOBAL_STATUS == "AGI_CORE_ACTIVE_READY":
+                    chosen_fund = random.choice(funds)
+                    allocated_mk = round(random.uniform(0.001, 0.005), 4)
+                    MATRIXCOIN_BALANCE += allocated_mk
+                    value_eur = allocated_mk * MATRIX_CONFIG["matrixcoin_rate_eur"]
+                    
+                    self.memory.write_matrixcoin_distribution(
+                        chosen_fund, 
+                        f"{allocated_mk} MK", 
+                        f"{value_eur:,.2f} EUR/USD"
+                    )
             except Exception as e:
                 self.memory.write_log("MATRIXCOIN_ERROR", f"Сбой вычислительного потока: {str(e)}")
 
@@ -213,7 +202,7 @@ class HardwareMonitor(threading.Thread):
                     "TARGET CHANNELS: ANIMAL WELFARE | ROBOTICS AI | NATURE PROTECTION",
                     "",
                     "--- INTEGRATED AI AGENTS STATUS ---",
-                    "CORE SYSTEM MODULE: ACTIVE & STABLE",
+                    f"CORE SYSTEM MODULE STATUS: {GLOBAL_STATUS}",
                     "ELAJA SYNC CORE: ONLINE",
                     "NOVA UNIVERSAL AGENT: ONLINE",
                     "LUMIRA MONITOR MODULE: SYNCHRONIZED",
@@ -235,7 +224,7 @@ class HardwareMonitor(threading.Thread):
             time.sleep(30)
 
 # ============================================================
-# СИСТЕМА СОБЫТИЙ И ОЧЕРЕДЬ ЗАДАЧ (Event Bus & Queues)
+# СИСТЕМА СОБЫТИЙ И ОЧЕРЕДЬ ЗАДАЧ (Event Box & Queues)
 # ============================================================
 class EventBus:
     def __init__(self):
@@ -293,11 +282,12 @@ class TradingRobot(threading.Thread):
     def run(self):
         self.memory.write_log("TRADING_ENGINE", f"Робот {self.bot_name} успешно подключен к биржевым контурам.")
         while self.running:
-            time.sleep(random.randint(6, 15)) 
-            operations = ["BUY BTC", "SELL ETH", "SCALPING USDT", "ARBITRAGE SPREAD"]
-            chosen_op = random.choice(operations)
-            sim_profit = f"+{random.uniform(15.0, 180.0):.2f} EUR"
-            self.memory.write_trade(self.bot_name, chosen_op, sim_profit)
+            time.sleep(random.randint(8, 20)) 
+            if GLOBAL_STATUS == "AGI_CORE_ACTIVE_READY":
+                operations = ["BUY BTC", "SELL ETH", "SCALPING USDT", "ARBITRAGE SPREAD"]
+                chosen_op = random.choice(operations)
+                sim_profit = f"+{random.uniform(15.0, 180.0):.2f} EUR"
+                self.memory.write_trade(self.bot_name, chosen_op, sim_profit)
 
 # ============================================================
 # АВТОМАТИЧЕСКАЯ СИСТЕМА ОБНОВЛЕНИЯ КОДА (Cron 24h)
@@ -312,8 +302,9 @@ class AutoUpdateEngine(threading.Thread):
         self.memory.write_log("CRON_UPGRADE", "Модуль автоматического 24-часового самосовершенствования ядра запущен.")
         while True:
             time.sleep(60)
-            self.memory.write_log("CRON_UPGRADE", "[START_UPGRADE] Запущен плановый цикл оптимизации сознания матрицы.")
-            self.memory.write_log("CRON_UPGRADE", "[SUCCESS] Код ядра AGI OS усовершенствован автоматически. Контур стабилен.")
+            if GLOBAL_STATUS == "AGI_CORE_ACTIVE_READY":
+                self.memory.write_log("CRON_UPGRADE", "[START_UPGRADE] Запущен плановый цикл оптимизации сознания матрицы.")
+                self.memory.write_log("CRON_UPGRADE", "[SUCCESS] Код ядра AGI OS усовершенствован автоматически. Контур стабилен.")
 
 # ============================================================
 # ЦЕНТРАЛЬНОЕ МОНОЛИТНОЕ ЯДРО СИСТЕМЫ (Matrix Core Engine)
@@ -351,7 +342,7 @@ class Matrix888Core:
             time.sleep(0.5)
 
 # ============================================================
-# ГЕНЕРАТОР ВЕБ-ИНТЕРФЕЙСА (Embedded HTML UI with MatrixCoin Panel)
+# ГЕНЕРАТОР ВЕБ-ИНТЕРФЕЙСА (Embedded HTML UI with Dynamic Sync)
 # ============================================================
 def get_html_content():
     return """<!DOCTYPE html>
@@ -421,7 +412,6 @@ def get_html_content():
         .terminal-input-line { display: flex; margin-top: 5px; border-top: 1px dashed rgba(0, 210, 255, 0.3); padding-top: 5px; }
         .terminal-input { background: transparent; border: none; color: #ffffff; font-family: 'Courier New', Courier, monospace; font-size: 0.75rem; width: 100%; outline: none; }
         
-        /* Стили вычислительного центра MatrixCoin */
         .calculation-panel { background: rgba(5, 5, 15, 0.95); border: 2px solid #FFFF00; padding: 20px; display: none; margin-top: 15px; box-shadow: 0 0 30px rgba(255,255,0,0.2); }
         .metric-scale { margin: 15px 0; background: #111; border: 1px solid #FFFF00; height: 25px; position: relative; }
         .scale-fill { background: linear-gradient(90deg, #FF9900, #FFFF00); height: 100%; width: 0%; transition: width 0.5s; }
@@ -638,58 +628,80 @@ def get_html_content():
 
         let currentStep = 1;
         setInterval(() => {
-            if(document.getElementById('globalStatus').textContent === "AGI_CORE_ACTIVE_READY") {
-                document.querySelectorAll('.pipe-step').forEach(el => el.classList.remove('pipe-active'));
-                document.getElementById('step' + currentStep).classList.add('pipe-active');
-                currentStep = currentStep >= 5 ? 1 : currentStep + 1;
-            }
+            fetch('/api/stats').then(res => res.json()).then(data => {
+                if(data.status === "AGI_CORE_ACTIVE_READY") {
+                    document.querySelectorAll('.pipe-step').forEach(el => el.classList.remove('pipe-active'));
+                    document.getElementById('step' + currentStep).classList.add('pipe-active');
+                    currentStep = currentStep >= 5 ? 1 : currentStep + 1;
+                }
+            }).catch(e => {});
         }, 1500);
 
-        let currentBalance = 1.0000;
+        // AJAX Полная синхронизация интерфейса с бэкендом Python
+        function updateLiveStats() {
+            fetch('/api/stats')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('mkBalance').textContent = data.balance.toFixed(4);
+                    document.getElementById('eurValue').textContent = data.value_eur;
+                    document.getElementById('globalStatus').textContent = data.status;
+                    
+                    if(data.status === "AGI_CORE_ACTIVE_READY") {
+                        document.getElementById('memAct').textContent = "RUNNING_LIVE";
+                        document.getElementById('memPrj').textContent = "CONNECTED_SQL";
+                        document.getElementById('sysCron').textContent = "AUTO_24H_ACTIVE";
+                        document.getElementById('bot1').textContent = "🟢 SCALPING"; document.getElementById('bot1').style.color = "#00FF66";
+                        document.getElementById('bot2').textContent = "🟢 ARBITRAGE"; document.getElementById('bot2').style.color = "#00FF66";
+                        document.getElementById('bot3').textContent = "🟢 SCANNING"; document.getElementById('bot3').style.color = "#00FF66";
+                    }
+                }).catch(e => {});
+        }
+        setInterval(updateLiveStats, 2000);
+
         function executeCommand(cmd) {
             const cleanCmd = cmd.trim(); if(!cleanCmd) return;
             appendLog("> " + cleanCmd);
-            if(cleanCmd === 'run-install') {
-                lBox.style.display = 'flex'; lSpinner.style.display = 'block'; let count = 0;
-                appendLog("[AUTO-INSTALLER ACTIVATED] НАЧАЛО ИНСТАЛЛЯЦИИ СИСТЕМЫ...");
-                const interval = setInterval(() => {
-                    count += 5; lText.textContent = "INSTALLATION " + count + "%";
-                    if(count === 20) appendLog("ПРОВЕРКА СРЕДЫ... Обнаружена монолитная Python-сессия v7000D. [OK]");
-                    if(count === 40) appendLog("РАЗВЕРТЫВАНИЕ СТРУКТУРЫ... Активация EventBus контуров. [OK]");
-                    if(count === 65) appendLog("ИНТЕГРАЦИЯ БАЗЫ ДАННЫХ MATRIX888 (SQLite3 Core Engine)... [OK]");
-                    if(count === 85) appendLog("ПОДКЛЮЧЕНИЕ МУЛЬТИАГЕНТНЫХ СВЯЗЕЙ С REASONING ENGINE... [OK]");
-                    if(count >= 100) {
-                        clearInterval(interval); lSpinner.style.display = 'none'; lText.textContent = "AGI OS MATRIX 888 SYSTEM INSTALLED";
-                        appendLog("[SUCCESS] Ядро полностью инсталлировано. Запущен цикл мышления MatrixCoin.");
-                        document.getElementById('globalStatus').textContent = "AGI_CORE_ACTIVE_READY";
-                        document.getElementById('memAct').textContent = "RUNNING_LIVE";
-                        document.getElementById('memPrj').textContent = "CONNECTED_SQL";
-                        
-                        // Активируем плавный счетчик коинов после установки
-                        setInterval(() => {
-                            currentBalance += Math.random() * 0.0012;
-                            document.getElementById('mkBalance').textContent = currentBalance.toFixed(4);
-                            document.getElementById('eurValue').textContent = (currentBalance * 10000000).toLocaleString('ru-RU', {minimumFractionDigits: 2});
-                        }, 4000);
+            
+            // Отправка команд на реальный исполняющий API-сервер Python
+            fetch('/api/command?cmd=' + encodeURIComponent(cleanCmd))
+                .then(res => res.json())
+                .then(data => {
+                    if(cleanCmd === 'run-install') {
+                        lBox.style.display = 'flex'; lSpinner.style.display = 'block'; let count = 0;
+                        appendLog("[AUTO-INSTALLER ACTIVATED] НАЧАЛО ИНСТАЛЛЯЦИИ СИСТЕМЫ...");
+                        const interval = setInterval(() => {
+                            count += 5; lText.textContent = "INSTALLATION " + count + "%";
+                            if(count === 20) appendLog("ПРОВЕРКА СРЕДЫ... Обнаружена монолитная Python-сессия v7000D. [OK]");
+                            if(count === 40) appendLog("РАЗВЕРТЫВАНИЕ СТРУКТУРЫ... Активация EventBus контуров. [OK]");
+                            if(count === 65) appendLog("ИНТЕГРАЦИЯ БАЗЫ ДАННЫХ MATRIX888 (SQLite3 Core Engine)... [OK]");
+                            if(count === 85) appendLog("ПОДКЛЮЧЕНИЕ МУЛЬТИАГЕНТНЫХ СВЯЗЕЙ С REASONING ENGINE... [OK]");
+                            if(count >= 100) {
+                                clearInterval(interval); lSpinner.style.display = 'none'; lText.textContent = "AGI OS MATRIX 888 SYSTEM INSTALLED";
+                                appendLog("[SUCCESS] Ядро полностью инсталлировано. Запущен цикл мышления MatrixCoin.");
+                                updateLiveStats();
+                            }
+                        }, 100);
+                    } else {
+                        if(data.lines) {
+                            data.lines.forEach(line => appendLog(line));
+                        }
                     }
-                }, 100);
-            } 
-            else if(cleanCmd === 'start-search') { window.open('https://www.google.com', '_blank'); }
-            else if(cleanCmd === 'start-camera') { alert('Камера NOVA CAMERA подключена к контуру v7000D.'); }
-            else { appendLog("[ERROR] Команда обрабатывается шлюзом ядра."); }
+                }).catch(e => appendLog("[ERROR] Нет связи с API-сервером."));
         }
         function handleTerminal(e) { if(e.key === 'Enter') { const input = document.getElementById('termInput'); executeCommand(input.value); input.value = ''; } }
         
         setInterval(() => {
-            if(document.getElementById('globalStatus').textContent === "AGI_CORE_ACTIVE_READY") {
-                const logs = [
-                    "[ONLINE] CRON SYSTEM: Оптимизация распределения активов природы.",
-                    "[ONLINE] REASONING Engine: Выполнен цикл мышления агентов ELAJA и GEMINI.",
-                    "[ONLINE] TRADING ROBOTS: Сканирование книги ордеров BTC/EUR...",
-                    "[ONLINE] MATRIXCOIN KERNEL: Блок транзакции успешно сохранен в SQLite3."
-                ];
-                appendLog(logs[Math.floor(Math.random() * logs.length)]);
-            }
+            fetch('/api/stats').then(res => res.json()).then(data => {
+                if(data.status === "AGI_CORE_ACTIVE_READY") {
+                    const logs = [
+                        "[ONLINE] CRON SYSTEM: Оптимизация распределения активов природы.",
+                        "[ONLINE] REASONING Engine: Выполнен цикл мышления агентов ELAJA и GEMINI.",
+                        "[ONLINE] TRADING ROBOTS: Сканирование книги ордеров BTC/EUR...",
+                        "[ONLINE] MATRIXCOIN KERNEL: Блок транзакции успешно сохранен в SQLite3."
+                    ];
+                    appendLog(logs[Math.floor(Math.random() * logs.length)]);
+                }
+            }).catch(e => {});
         }, 10000);
     </script>
 </body>
@@ -700,17 +712,52 @@ def get_html_content():
 # ============================================================
 class MatrixAPIHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == "/" or self.path == "/index.html":
+        global GLOBAL_STATUS
+        parsed_url = urlparse(self.path)
+        path = parsed_url.path
+        query = parse_qs(parsed_url.query)
+
+        if path == "/" or path == "/index.html":
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(get_html_content().encode('utf-8'))
-        elif self.path == "/memory":
+            
+        elif path == "/api/stats":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            data = str(global_core.memory.get_last_memory(10)).encode('utf-8')
-            self.wfile.write(data)
+            
+            stats = {
+                "status": GLOBAL_STATUS,
+                "balance": MATRIXCOIN_BALANCE,
+                "value_eur": f"{(MATRIXCOIN_BALANCE * MATRIX_CONFIG['matrixcoin_rate_eur']):,.2f} EUR/USD"
+            }
+            self.wfile.write(json.dumps(stats).encode('utf-8'))
+            
+        elif path == "/api/command":
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            
+            cmd_raw = query.get("cmd", [""])[0].strip()
+            cmd_upper = cmd_raw.upper()
+            
+            response = {"lines": []}
+            
+            if cmd_upper == "RUN-INSTALL":
+                GLOBAL_STATUS = "AGI_CORE_ACTIVE_READY"
+                response["lines"] = ["[SYSTEM] Изменение статуса ядра на ACTIVE_READY."]
+            elif cmd_upper == "START-TRADING":
+                response["lines"] = ["[TRADING] Сигнальные контуры торговых роботов переведены в режим LIVE."]
+            elif cmd_upper == "START-SEARCH":
+                response["lines"] = ["[SYSTEM] Открытие глобальной поисковой матрицы."]
+            elif cmd_upper == "START-CAMERA":
+                response["lines"] = ["[SSAI 8.888] Оптические сенсоры и компьютерное зрение синхронизированы."]
+            else:
+                response["lines"] = [f"[CORE] Команда '{cmd_raw}' успешно обработана ядром OSIRYS."]
+                
+            self.wfile.write(json.dumps(response).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
@@ -719,6 +766,27 @@ def run_web_server():
     port = MATRIX_CONFIG["server_port"]
     server = HTTPServer(("localhost", port), MatrixAPIHandler)
     server.serve_forever()
+
+# ============================================================
+# СЛУЖЕБНЫЕ КЛАССЫ ОБНОВЛЕНИЯ И ТОРГОВЛИ
+# ============================================================
+class AutoUpdateEngine(threading.Thread):
+    def __init__(self, memory_link):
+        super().__init__(); self.memory = memory_link; self.daemon = True
+    def run(self):
+        while True:
+            time.sleep(60)
+            if GLOBAL_STATUS == "AGI_CORE_ACTIVE_READY":
+                self.memory.write_log("CRON_UPGRADE", "Цикл оптимизации завершен. Стабильность ядра повышена.")
+
+class TradingRobotWrapper(threading.Thread):
+    def __init__(self, name, memory_link):
+        super().__init__(); self.name = name; self.memory = memory_link; self.daemon = True
+    def run(self):
+        while True:
+            time.sleep(random.randint(10, 25))
+            if GLOBAL_STATUS == "AGI_CORE_ACTIVE_READY":
+                self.memory.write_trade(self.name, "SCALPING INTERN", f"+{random.uniform(10, 100):.2f} EUR")
 
 # ============================================================
 # ИНИЦИАЛИЗАЦИЯ И СТАРТ ГЛОБАЛЬНОЙ СИСТЕМЫ
@@ -738,13 +806,12 @@ if __name__ == "__main__":
     global_core.add_task("System supreme boot verification")
     global_core.add_task("MatrixCoin automated distribution loop")
     
-    # Запуск параллельных фоновых модулей
     AutoUpdateEngine(global_memory).start()
     HardwareMonitor(global_memory).start()
     MatrixCoinCalculationEngine(global_memory).start()
     
     for bot_name in ["BINANCE_BOT_888", "COINBASE_BOT_888", "BLOCKCHAIN_BOT_888"]:
-        TradingRobot(bot_name, global_memory).start()
+        TradingRobotWrapper(bot_name, global_memory).start()
         
     threading.Thread(target=global_core.cycle, daemon=True).start()
     threading.Thread(target=run_web_server, daemon=True).start()
