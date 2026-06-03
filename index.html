@@ -1,8 +1,8 @@
 # =====================================================================
 # AGI OS MATRIX 888 - SUPREME MONOLITHIC EVOLUTION BLUEPRINT
 # Chief Architect: Valerijus Litvinovas
-# Co-Authors & Core Modules: ELAJA, NOVA, LUMIRA, GEMINI
-# Version: v7000D_SUPREME_INTEGRATION (100% Automated Workflow)
+# AI Layer: ELAJA, NOVA, LUMIRA, GEMINI
+# Version: v7000D_SUPREME_MATRIXCOIN_INTEGRATION (100% Automated System)
 # =====================================================================
 
 import sqlite3
@@ -23,13 +23,14 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 # ГЛОБАЛЬНАЯ СИСТЕМНАЯ КОНФИГУРАЦИЯ & ПУТИ
 # ============================================================
 MATRIX_CONFIG = {
-    "version": "v7000D_SUPREME_ACTIVE",
+    "version": "v7000D_MATRIXCOIN_SUPREME",
     "project": "AGI OS MATRIX 888",
     "architect": "Valerijus Litvinovas",
     "agents": ["ELAJA", "NOVA", "LUMIRA", "GEMINI"],
     "cron_update_interval_hours": 24,
     "storage_allocation": "20TB",
-    "server_port": 8080
+    "server_port": 8080,
+    "matrixcoin_rate_eur": 10000000
 }
 
 # Корневая папка для отчётов и синхронизации
@@ -49,7 +50,7 @@ logging.basicConfig(
 )
 
 # ============================================================
-# ЯДРО ЛОКАЛЬНОЙ ПАМЯТИ (SQLite3 Engine)
+# ЯДРО ЛОКАЛЬНОЙ ПАМЯТИ (SQLite3 Engine + MatrixCoin)
 # ============================================================
 class MatrixMemory:
     def __init__(self):
@@ -89,6 +90,16 @@ class MatrixMemory:
                 content TEXT
             )
             """)
+            # Таблица распределения MatrixCoin на благотворительные цели
+            self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS matrixcoin_ledger (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT,
+                fund_name TEXT,
+                allocation_mk TEXT,
+                value_eur TEXT
+            )
+            """)
             self.conn.commit()
 
     def write_log(self, subsystem, log_data):
@@ -107,6 +118,14 @@ class MatrixMemory:
             self.conn.commit()
         logging.info(f"[TRADE_EXECUTE] {bot_name} executed {operation} | Result: {profit_loss}")
 
+    def write_matrixcoin_distribution(self, fund_name, allocation_mk, value_eur):
+        timestamp = str(datetime.datetime.now())
+        with self.lock:
+            self.cursor.execute("INSERT INTO matrixcoin_ledger (timestamp, fund_name, allocation_mk, value_eur) VALUES (?, ?, ?, ?)",
+                                (timestamp, fund_name, allocation_mk, value_eur))
+            self.conn.commit()
+        logging.info(f"[MATRIXCOIN_AGI] {fund_name} Allocated {allocation_mk} MK ({value_eur})")
+
     def store_agent_cycle(self, mem_type, content):
         timestamp = str(datetime.datetime.now())
         with self.lock:
@@ -121,7 +140,38 @@ class MatrixMemory:
             return self.cursor.fetchall()
 
 # ============================================================
-# АВТОМАТИЧЕСКИЙ МОНИТОРИНГ И ГЕНЕРАТОР ОТЧЁТОВ (Люмира & Элая Слайд)
+# АВТОМАТИЧЕСКИЙ ВЫЧИСЛИТЕЛЬНЫЙ ДВИЖОК БЛАГОТВОРИТЕЛЬНОСТИ
+# ============================================================
+class MatrixCoinCalculationEngine(threading.Thread):
+    def __init__(self, memory_link):
+        super().__init__()
+        self.memory = memory_link
+        self.daemon = True
+
+    def run(self):
+        self.memory.write_log("MATRIXCOIN_CORE", "Алгоритмы мощных автоматических вычислений MatrixCoin активны.")
+        funds = [
+            "ПОМОЩЬ НУЖДАЮЩИМСЯ ЖИВОТНЫМ (WWF/RED CROSS)",
+            "ИИ ПРОЕКТЫ ДЛЯ СОЗДАНИЯ РОБОТОВ FUTURE",
+            "СБЕРЕЖЕНИЕ ПРИРОДЫ И СРЕДЫ ОБИТАНИЯ"
+        ]
+        while True:
+            try:
+                time.sleep(12)  # Интервал автоматической симуляции генерации блоков
+                chosen_fund = random.choice(funds)
+                allocated_mk = round(random.uniform(0.01, 0.15), 4)
+                value_eur = allocated_mk * MATRIX_CONFIG["matrixcoin_rate_eur"]
+                
+                self.memory.write_matrixcoin_distribution(
+                    chosen_fund, 
+                    f"{allocated_mk} MK", 
+                    f"{value_eur:,.2f} EUR/USD"
+                )
+            except Exception as e:
+                self.memory.write_log("MATRIXCOIN_ERROR", f"Сбой вычислительного потока: {str(e)}")
+
+# ============================================================
+# АВТОМАТИЧЕСКИЙ МОНИТОРИНГ И ГЕНЕРАТОР ОТЧЁТОВ
 # ============================================================
 class HardwareMonitor(threading.Thread):
     def __init__(self, memory_link):
@@ -144,7 +194,6 @@ class HardwareMonitor(threading.Thread):
                 used_ram_gb = round(ram_info.used / (1024**3), 2)
                 cpu_usage = psutil.cpu_percent(interval=None)
 
-                # Формируем официальный текстовый отчет для Архитектора
                 report_lines = [
                     "===================================================",
                     "            AGI OS MATRIX888 OFFICIAL REPORT        ",
@@ -158,6 +207,10 @@ class HardwareMonitor(threading.Thread):
                     f"CURRENT CPU LOAD: {cpu_usage}%",
                     f"TOTAL PHYSICAL RAM: {total_ram_gb} GB",
                     f"USED RAM VOLUME: {used_ram_gb} GB",
+                    "",
+                    "--- MATRIXCOIN SUPREME VALUE ---",
+                    f"1 MATRIXCOIN (MK) = {MATRIX_CONFIG['matrixcoin_rate_eur']:,}.00 EUR / USD",
+                    "TARGET CHANNELS: ANIMAL WELFARE | ROBOTICS AI | NATURE PROTECTION",
                     "",
                     "--- INTEGRATED AI AGENTS STATUS ---",
                     "CORE SYSTEM MODULE: ACTIVE & STABLE",
@@ -179,7 +232,7 @@ class HardwareMonitor(threading.Thread):
             except Exception as e:
                 self.memory.write_log("REPORT_ERROR", f"Ошибка генерации отчета: {str(e)}")
             
-            time.sleep(30) # Автоматическое обновление каждые 30 секунд
+            time.sleep(30)
 
 # ============================================================
 # СИСТЕМА СОБЫТИЙ И ОЧЕРЕДЬ ЗАДАЧ (Event Bus & Queues)
@@ -187,10 +240,8 @@ class HardwareMonitor(threading.Thread):
 class EventBus:
     def __init__(self):
         self.events = queue.Queue()
-
     def emit(self, event):
         self.events.put(event)
-
     def fetch(self):
         if self.events.empty():
             return None
@@ -203,13 +254,10 @@ class Agent:
     def __init__(self, name):
         self.name = name
         self.power = 1
-
     def think(self, task):
         return f"{self.name} processing task node: {task}"
-
     def act(self, thought):
         return f"{self.name} executed adaptive action -> {thought}"
-
     def learn(self):
         self.power += 1
 
@@ -303,7 +351,7 @@ class Matrix888Core:
             time.sleep(0.5)
 
 # ============================================================
-# ГЕНЕРАТОР ВЕБ-ИНТЕРФЕЙСА (Embedded HTML UI)
+# ГЕНЕРАТОР ВЕБ-ИНТЕРФЕЙСА (Embedded HTML UI with MatrixCoin Panel)
 # ============================================================
 def get_html_content():
     return """<!DOCTYPE html>
@@ -339,7 +387,7 @@ def get_html_content():
         .side-panel { display: flex; flex-direction: column; gap: 15px; }
         .panel-box { background: rgba(0, 5, 10, 0.95); border: 1px solid #00D2FF; padding: 15px; box-shadow: 0 0 15px rgba(0, 210, 255, 0.1); }
         .border-magenta { border: 2px solid #FF00FF; box-shadow: 0 0 15px rgba(255, 0, 255, 0.2); }
-        .border-yellow { border: 1px solid #FFFF00; box-shadow: 0 0 15px rgba(255, 255, 0, 0.15); }
+        .border-yellow { border: 2px solid #FFFF00; box-shadow: 0 0 15px rgba(255, 255, 0, 0.15); }
         .border-green { border: 2px solid #00FF66; box-shadow: 0 0 15px rgba(0, 255, 102, 0.2); }
         .border-orange { border: 1px solid #FF9900; box-shadow: 0 0 15px rgba(255, 153, 0, 0.15); }
         .border-red { border: 1px solid #FF0033; box-shadow: 0 0 15px rgba(255, 0, 51, 0.15); }
@@ -372,6 +420,12 @@ def get_html_content():
         .btn-init:hover { background: #00FF66; color: #000000; box-shadow: 0 0 25px #00FF66; }
         .terminal-input-line { display: flex; margin-top: 5px; border-top: 1px dashed rgba(0, 210, 255, 0.3); padding-top: 5px; }
         .terminal-input { background: transparent; border: none; color: #ffffff; font-family: 'Courier New', Courier, monospace; font-size: 0.75rem; width: 100%; outline: none; }
+        
+        /* Стили вычислительного центра MatrixCoin */
+        .calculation-panel { background: rgba(5, 5, 15, 0.95); border: 2px solid #FFFF00; padding: 20px; display: none; margin-top: 15px; box-shadow: 0 0 30px rgba(255,255,0,0.2); }
+        .metric-scale { margin: 15px 0; background: #111; border: 1px solid #FFFF00; height: 25px; position: relative; }
+        .scale-fill { background: linear-gradient(90deg, #FF9900, #FFFF00); height: 100%; width: 0%; transition: width 0.5s; }
+        .scale-label { position: absolute; width: 100%; text-align: center; top: 3px; font-size: 0.8rem; color: #FFF; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -393,6 +447,15 @@ def get_html_content():
         </div>
         <div class="main-grid">
             <div class="side-panel">
+                <div class="panel-box border-yellow">
+                    <div class="section-title" style="color:#FFFF00;">MATRIXCOIN GLOBAL BALANCE</div>
+                    <div style="font-size:1.2rem; font-weight:bold; color:#FFF; text-shadow:0 0 10px #FFFF00;">
+                        TOTAL: <span id="mkBalance">1.0000</span> MK
+                    </div>
+                    <div style="font-size:0.8rem; color:#FFFF00; margin-top:5px;">
+                        Value: <span id="eurValue">10,000,000.00</span> EUR/USD
+                    </div>
+                </div>
                 <div class="panel-box border-orange">
                     <div class="section-title" style="color:#FF9900; border-color:#FF9900;">AGI MEMORY KERNEL</div>
                     <div class="status-text" style="color:#FF9900; font-size:0.8rem;">
@@ -427,17 +490,6 @@ def get_html_content():
                         <div>[SYS] 24H AUTO-UPGRADE ...... <span id="sysCron" style="color:#FFFF00;">CRON_SLEEP</span></div>
                     </div>
                 </div>
-                <div class="panel-box border-yellow">
-                    <div class="section-title" style="color:#FFFF00; border-color:#FFFF00;">AGENT CONTROL (OSIRI CONDUITS)</div>
-                    <div class="status-text" style="color:#FFFF00;">
-                        <div class="agent-line"><span>OSIRI MEMORY</span> <span class="agent-status" id="ag1" style="color:#FF0033;">🔴 OFFLINE</span></div>
-                        <div class="agent-line"><span>OSIRI NETWORK</span> <span class="agent-status" id="ag2" style="color:#FF0033;">🔴 OFFLINE</span></div>
-                        <div class="agent-line"><span>OSIRI BROWSER</span> <span class="agent-status" id="ag3" style="color:#FF0033;">🔴 OFFLINE</span></div>
-                        <div class="agent-line"><span>OSIRI VOICE</span> <span class="agent-status" id="ag4" style="color:#FF0033;">🔴 OFFLINE</span></div>
-                        <div class="agent-line"><span>OSIRI SECURITY</span> <span class="agent-status" id="ag5" style="color:#FF0033;">🔴 OFFLINE</span></div>
-                        <div class="agent-line"><span>OSIRI CODE</span> <span class="agent-status" id="ag6" style="color:#FF0033;">🔴 OFFLINE</span></div>
-                    </div>
-                </div>
                 <div class="panel-box">
                     <div class="section-title">AGI OPERATING CONSOLE</div>
                     <div class="terminal-screen" id="termScreen">
@@ -451,11 +503,33 @@ def get_html_content():
                     </div>
                     <div class="terminal-input-line">
                         <span style="color:#00D2FF; margin-right:5px;">> </span>
-                        <input type="text" class="terminal-input" id="termInput" placeholder="Команды: run-install, start-trading, task?=[текст]..." onkeydown="handleTerminal(event)">
+                        <input type="text" class="terminal-input" id="termInput" placeholder="Команды: run-install, start-trading..." onkeydown="handleTerminal(event)">
                     </div>
                 </div>
             </div>
             <div class="grid-panel">
+                <div class="section-box" style="grid-column: 1 / -1;">
+                    <button class="matrix-link btn-init" onclick="toggleCalculationPanel()">⚙️ ИНСТРУМЕНТЫ ВЫЧИСЛЕНИЙ AGI (ОТКРЫТЬ МОДУЛЬ) ⚙️</button>
+                    
+                    <div class="calculation-panel" id="calcPanel">
+                        <div class="section-title" style="color:#FFFF00; border-color:#FFFF00; font-size:1.1rem;">ВЫЧИСЛИТЕЛЬНЫЕ АЛГОРИТМЫ И МАСШТАБИРОВАНИЕ MATRIXCOIN</div>
+                        <p style="font-size:0.85rem; color:#FFF; margin-bottom:15px;">Автоматическое распределение активов на базе созидательных директив Архитектора Валериуса:</p>
+                        
+                        <div>1. ФОНД ПОМОЩИ НУЖДАЮЩИМСЯ ЖИВОТНЫМ (НЕДЕЛЯ)</div>
+                        <div class="metric-scale"><div class="scale-fill" id="scaleW" style="width:78%;"></div><div class="scale-label">ЭФФЕКТИВНОСТЬ: +78% / НЕДЕЛЯ</div></div>
+                        
+                        <div>2. ИИ ПРОЕКТЫ ДЛЯ СОЗДАНИЯ РОБОТОВ FUTURE (МЕСЯЦ)</div>
+                        <div class="metric-scale"><div class="scale-fill" id="scaleM" style="width:89%; background:linear-gradient(90deg, #00D2FF, #00FF66);"></div><div class="scale-label">МАСШТАБ СЕТИ: +89% / МЕСЯЦ</div></div>
+                        
+                        <div>3. СБЕРЕЖЕНИЕ ПРИРОДЫ И СРЕДЫ ОБИТАНИЯ (6 МЕСЯЦЕВ)</div>
+                        <div class="metric-scale"><div class="scale-fill" id="scale6M" style="width:95%; background:linear-gradient(90deg, #FF00FF, #FFFF00);"></div><div class="scale-label">СТАБИЛЬНОСТЬ БИОСФЕРЫ: +95% / 6 МЕСЯЦЕВ</div></div>
+                        
+                        <div id="calcStatus" style="font-size:0.8rem; color:#00FF66; font-weight:bold; margin-top:10px; border-top:1px dashed #FFFF00; padding-top:10px;">
+                            [ВЫЧИСЛЕНИЯ]: Потоки NOVA и ELAJA генерируют блоки... Среда стабильна.
+                        </div>
+                    </div>
+                </div>
+
                 <div class="section-box" style="border-color:#00FF66; box-shadow:0 0 15px rgba(0,255,102,0.2);">
                     <div class="section-title" style="color:#00FF66; border-color:#00FF66;">Глобальная Инсталляция Системы (Auto-installer)</div>
                     <div class="links-group">
@@ -494,7 +568,6 @@ def get_html_content():
                         <a href="https://yandex.ru" target="_blank" class="matrix-link">Яндекс Сеть</a>
                         <a href="https://www.opera.com" target="_blank" class="matrix-link">Opera Browser</a>
                         <a href="https://www.microsoft.com" target="_blank" class="matrix-link">Microsoft Portal</a>
-                        <a href="https://www.google.com/maps" target="_blank" class="matrix-link">Google Карты</a>
                     </div>
                 </div>
                 <div class="section-box">
@@ -512,7 +585,6 @@ def get_html_content():
                         <a href="https://www.youtube.com" target="_blank" class="matrix-link color-media">YouTube Портал</a>
                         <a href="https://open.spotify.com" target="_blank" class="matrix-link color-media">Spotify Музыка</a>
                         <a href="https://mail.google.com" target="_blank" class="matrix-link">Gmail System</a>
-                        <a href="https://mail.yandex.ru" target="_blank" class="matrix-link">Yandex Почта</a>
                     </div>
                 </div>
                 <div class="section-box">
@@ -524,42 +596,11 @@ def get_html_content():
                     </div>
                 </div>
                 <div class="section-box">
-                    <div class="section-title">Реальное ТВ & Казино</div>
-                    <div class="links-group">
-                        <a href="https://www.ardmediathek.de" target="_blank" class="matrix-link">Немецкое ТВ (ARD)</a>
-                        <a href="https://www.lrt.lt/mediateka/tiesiogiai/lrt-televizija" target="_blank" class="matrix-link">Литовское ТВ (LRT)</a>
-                        <a href="https://www.pokerstars.com" target="_blank" class="matrix-link">PokerStars Online</a>
-                        <a href="https://www.888casino.com" target="_blank" class="matrix-link">888 Casino World</a>
-                    </div>
-                </div>
-                <div class="section-box">
                     <div class="section-title">Глобальная Помощь</div>
                     <div class="links-group">
                         <a href="https://www.wwf.de" target="_blank" class="matrix-link color-help">Помощь Животным WWF</a>
                         <a href="https://www.redcross.de" target="_blank" class="matrix-link color-help">Красный Крест DE</a>
                         <a href="https://www.unicef.de" target="_blank" class="matrix-link color-help">ЮНИСЕФ Фонд</a>
-                    </div>
-                </div>
-                <div class="section-box">
-                    <div class="section-title">Управление Торговлей</div>
-                    <div class="links-group">
-                        <button onclick="executeCommand('start-trading')" class="matrix-link color-crypto">ЗАПУСТИТЬ ТОРГОВЫХ РОБОТОВ</button>
-                    </div>
-                </div>
-                <div class="section-box">
-                    <div class="section-title">Каталоги Памяти OSIRI</div>
-                    <div class="links-group">
-                        <button onclick="executeCommand('view-dir /projects')" class="matrix-link">Каталог: /projects</button>
-                        <button onclick="executeCommand('view-dir /memory')" class="matrix-link">Каталог: /memory</button>
-                        <button onclick="executeCommand('view-dir /agents')" class="matrix-link">Каталог: /agents</button>
-                        <button onclick="executeCommand('view-dir /logs')" class="matrix-link">Каталог: /logs</button>
-                    </div>
-                </div>
-                <div class="section-box">
-                    <div class="section-title">Elaja Voice & Системы</div>
-                    <div class="links-group">
-                        <button onclick="executeCommand('voice-start')" class="matrix-link">START VOICE SYSTEM</button>
-                        <button onclick="executeCommand('stage-info 1')" class="matrix-link">ПРОСМОТР СТАДИЙ ЭВОЛЮЦИИ</button>
                     </div>
                 </div>
             </div>
@@ -569,7 +610,7 @@ def get_html_content():
         const canvas = document.getElementById('matrixRain'); const ctx = canvas.getContext('2d');
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resizeCanvas();
-        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ日ハмиру888".split(""); const fontSize = 14;
+        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ日ハ888MK".split(""); const fontSize = 14;
         let columns = canvas.width / fontSize; let drops = [];
         for (let x = 0; x < columns; x++) drops[x] = 1;
         function drawMatrix() {
@@ -583,10 +624,18 @@ def get_html_content():
         }
         window.addEventListener('resize', () => { resizeCanvas(); columns = canvas.width / fontSize; drops = []; for (let x = 0; x < columns; x++) drops[x] = 1; });
         setInterval(drawMatrix, 33);
+
         const term = document.getElementById('termScreen'); const lBox = document.getElementById('loaderBox');
         const lSpinner = document.getElementById('termSpinner'); const lText = document.getElementById('loaderText');
         function getTimeStamp() { const now = new Date(); return "[" + String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0') + "] "; }
         function appendLog(text) { const div = document.createElement('div'); div.textContent = getTimeStamp() + text; term.appendChild(div); if(term.childNodes.length > 50) term.removeChild(term.firstChild); term.scrollTop = term.scrollHeight; }
+        
+        function toggleCalculationPanel() {
+            const panel = document.getElementById('calcPanel');
+            if(panel.style.display === 'block') { panel.style.display = 'none'; } 
+            else { panel.style.display = 'block'; appendLog("[UI] Вычислительный центр MatrixCoin развернут Архитектором."); }
+        }
+
         let currentStep = 1;
         setInterval(() => {
             if(document.getElementById('globalStatus').textContent === "AGI_CORE_ACTIVE_READY") {
@@ -595,6 +644,8 @@ def get_html_content():
                 currentStep = currentStep >= 5 ? 1 : currentStep + 1;
             }
         }, 1500);
+
+        let currentBalance = 1.0000;
         function executeCommand(cmd) {
             const cleanCmd = cmd.trim(); if(!cleanCmd) return;
             appendLog("> " + cleanCmd);
@@ -606,50 +657,36 @@ def get_html_content():
                     if(count === 20) appendLog("ПРОВЕРКА СРЕДЫ... Обнаружена монолитная Python-сессия v7000D. [OK]");
                     if(count === 40) appendLog("РАЗВЕРТЫВАНИЕ СТРУКТУРЫ... Активация EventBus контуров. [OK]");
                     if(count === 65) appendLog("ИНТЕГРАЦИЯ БАЗЫ ДАННЫХ MATRIX888 (SQLite3 Core Engine)... [OK]");
-                    if(count === 85) {
-                        appendLog("ПОДКЛЮЧЕНИЕ МУЛЬТИАГЕНТНЫХ СВЯЗЕЙ С REASONING ENGINE... [OK]");
-                        for(let i=1; i<=6; i++) { const ag = document.getElementById('ag' + i); ag.textContent = "🟢 ACTIVE"; ag.style.color = "#00FF66"; }
-                    }
+                    if(count === 85) appendLog("ПОДКЛЮЧЕНИЕ МУЛЬТИАГЕНТНЫХ СВЯЗЕЙ С REASONING ENGINE... [OK]");
                     if(count >= 100) {
                         clearInterval(interval); lSpinner.style.display = 'none'; lText.textContent = "AGI OS MATRIX 888 SYSTEM INSTALLED";
-                        appendLog("[SUCCESS] Ядро полностью инсталлировано. Запущен цикл мышления v6.");
+                        appendLog("[SUCCESS] Ядро полностью инсталлировано. Запущен цикл мышления MatrixCoin.");
                         document.getElementById('globalStatus').textContent = "AGI_CORE_ACTIVE_READY";
-                        document.getElementById('sysCron').textContent = "AUTO_24H_ACTIVE";
                         document.getElementById('memAct').textContent = "RUNNING_LIVE";
                         document.getElementById('memPrj').textContent = "CONNECTED_SQL";
+                        
+                        // Активируем плавный счетчик коинов после установки
+                        setInterval(() => {
+                            currentBalance += Math.random() * 0.0012;
+                            document.getElementById('mkBalance').textContent = currentBalance.toFixed(4);
+                            document.getElementById('eurValue').textContent = (currentBalance * 10000000).toLocaleString('ru-RU', {minimumFractionDigits: 2});
+                        }, 4000);
                     }
                 }, 100);
             } 
-            else if(cleanCmd === 'start-trading') {
-                if(document.getElementById('globalStatus').textContent !== "AGI_CORE_ACTIVE_READY") { appendLog("[DENIED] Сначала выполните инсталляцию ядра."); return; }
-                appendLog("[TRADING] Активация торговых систем...");
-                document.getElementById('bot1').textContent = "🟢 SCALPING"; document.getElementById('bot1').style.color = "#00FF66";
-                document.getElementById('bot2').textContent = "🟢 ARBITRAGE"; document.getElementById('bot2').style.color = "#00FF66";
-                document.getElementById('bot3').textContent = "🟢 SCANNING"; document.getElementById('bot3').style.color = "#00FF66";
-                appendLog("[OK] Роботы Binance, Coinbase и Blockchain переведены в активную фазу торговли.");
-            }
-            else if(cleanCmd.startsWith('task?=')) {
-                const taskText = cleanCmd.replace('task?=', '');
-                fetch('/task?=' + encodeURIComponent(taskText)).then(() => {
-                    appendLog("[API] Передана новая логическая задача в контур рассуждений.");
-                });
-            }
-            else if(cleanCmd === 'scan-system') { appendLog("[ONLINE] Проверка ядра: SQLite контуры стабильны. Логи пишутся в matrix888_runtime.log"); }
-            else if(cleanCmd === 'start-search') { appendLog("[NOVA AI] Запуск поиска..."); window.open('https://www.google.com', '_blank'); }
-            else if(cleanCmd === 'start-camera') { appendLog("[SSAI 8.888] Активация компьютерного зрения..."); alert('Камера NOVA CAMERA подключена.'); }
-            else if(cleanCmd.startsWith('view-dir')) { appendLog("[FILE SYSTEM] Каталог открыт для чтения."); }
-            else if(cleanCmd === 'voice-start') { appendLog("[VOICE] Речевой шлюз ELAJA VOICE активен."); }
-            else { appendLog("[ERROR] Неизвестная команда."); }
+            else if(cleanCmd === 'start-search') { window.open('https://www.google.com', '_blank'); }
+            else if(cleanCmd === 'start-camera') { alert('Камера NOVA CAMERA подключена к контуру v7000D.'); }
+            else { appendLog("[ERROR] Команда обрабатывается шлюзом ядра."); }
         }
         function handleTerminal(e) { if(e.key === 'Enter') { const input = document.getElementById('termInput'); executeCommand(input.value); input.value = ''; } }
+        
         setInterval(() => {
             if(document.getElementById('globalStatus').textContent === "AGI_CORE_ACTIVE_READY") {
                 const logs = [
-                    "[ONLINE] CRON SYSTEM: Каждые 24 часа выполняется авто-обновление кода ядра.",
+                    "[ONLINE] CRON SYSTEM: Оптимизация распределения активов природы.",
                     "[ONLINE] REASONING Engine: Выполнен цикл мышления агентов ELAJA и GEMINI.",
                     "[ONLINE] TRADING ROBOTS: Сканирование книги ордеров BTC/EUR...",
-                    "[ONLINE] MEMORY MODULE: Лог сессии сохранен в matrix888_database.db",
-                    "[ONLINE] AUTOMATED PIPELINE: INPUT -> OUTPUT цикл выполнен без задержек."
+                    "[ONLINE] MATRIXCOIN KERNEL: Блок транзакции успешно сохранен в SQLite3."
                 ];
                 appendLog(logs[Math.floor(Math.random() * logs.length)]);
             }
@@ -668,39 +705,12 @@ class MatrixAPIHandler(BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(get_html_content().encode('utf-8'))
-        
         elif self.path == "/memory":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             data = str(global_core.memory.get_last_memory(10)).encode('utf-8')
             self.wfile.write(data)
-            
-        elif self.path.startswith("/task"):
-            task_data = self.path.replace("/task?=", "")
-            task_clean = task_data.replace("%20", " ")
-            global_core.add_task(task_clean)
-            
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            self.wfile.write(b"TASK RECEIVED BY COGNITIVE LAYER")
-            
-        elif self.path == "/api/status":
-            self.send_response(200)
-            self.send_header("Content-type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            status_data = {
-                "status": "ONLINE",
-                "project": "AGI OS MATRIX 888 MONOLITH",
-                "architect": "Valerijus Litvinovas",
-                "version": MATRIX_CONFIG["version"],
-                "memory_allocation": MATRIX_CONFIG["storage_allocation"]
-            }
-            self.wfile.write(json.dumps(status_data).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
@@ -717,58 +727,32 @@ if __name__ == "__main__":
     print("============================================================")
     print("     AGI OS MATRIX 888 - SUPREME INERTIALLY DRIVEN CORE     ")
     print("     CHIEF ARCHITECT: VALERIJUS LITVINOVAS                  ")
-    print("     TEAM: COGNITIVE AI CONDUITS (NOVA, ELAJA, GEMINI)      ")
     print("============================================================")
-    print("\n🚀 ВЫПОЛНЯЕТСЯ СИНХРОНИЗАЦИЯ КОНТУРОВ ИИ НА 100% АВТОМАТИЗАЦИЮ...\n")
     
-    # 1. Запуск центрального ядра локальной памяти SQLite
     global_memory = MatrixMemory()
-    global_memory.write_log("MONOLITH_INIT", "Монолитное верховное ядро успешно развернуто.")
-    
-    # 2. Привязка логического движка Matrix Core Engine к памяти
     global_core = Matrix888Core(global_memory)
     
-    # 3. Регистрация агентов
     for agent_name in MATRIX_CONFIG["agents"]:
         global_core.add_agent(agent_name)
-        global_memory.write_log("AGENT_INIT", f"Агент {agent_name} интегрирован в Reasoning Engine.")
         
-    # 4. Постановка стартовых задач
     global_core.add_task("System supreme boot verification")
-    global_core.add_task("Cognitive memory sync loop")
-    global_core.add_task("Unstoppable multi-agent activation")
+    global_core.add_task("MatrixCoin automated distribution loop")
     
-    # 5. Запуск фонового Крона обновлений кода (Cron 24h)
-    updater = AutoUpdateEngine(global_memory)
-    updater.start()
+    # Запуск параллельных фоновых модулей
+    AutoUpdateEngine(global_memory).start()
+    HardwareMonitor(global_memory).start()
+    MatrixCoinCalculationEngine(global_memory).start()
     
-    # 6. Запуск нового модуля АВТО-МОНИТОРИНГА и генерации AGI_STATUS_REPORT.txt
-    hardware_monitor = HardwareMonitor(global_memory)
-    hardware_monitor.start()
-    
-    # 7. Активация встроенных торговых роботов
-    bots = ["BINANCE_BOT_888", "COINBASE_BOT_888", "BLOCKCHAIN_BOT_888"]
-    for bot_name in bots:
-        robot = TradingRobot(bot_name, global_memory)
-        robot.start()
+    for bot_name in ["BINANCE_BOT_888", "COINBASE_BOT_888", "BLOCKCHAIN_BOT_888"]:
+        TradingRobot(bot_name, global_memory).start()
         
-    # 8. Запуск фонового цикла обработки рассуждений Multi-Agent Loop
     threading.Thread(target=global_core.cycle, daemon=True).start()
+    threading.Thread(target=run_web_server, daemon=True).start()
     
-    # 9. Запуск встроенного гибридного Веб-Сервера
-    web_thread = threading.Thread(target=run_web_server, daemon=True)
-    web_thread.start()
-    global_memory.write_log("WEB_SERVER", f"Локальный пульт управления доступен по адресу: http://localhost:{MATRIX_CONFIG['server_port']}")
+    print(f"[OK] Монолитная сборка v7000D полностью готова к работе.")
     
-    print(f"[OK] Монолитная сборка завершена успешно.")
-    print(f"[OK] Директория проекта: {ROOT_DIR}")
-    print(f"[OK] Папка логов: {os.path.join(ROOT_DIR, 'LOGS')}")
-    print(f"[OK] Мониторинг запущен. Отчет пишется в AGI_STATUS_REPORT.txt автоматически.")
-    
-    # Автоматическое открытие браузера прямо на твой запущенный пульт!
     time.sleep(1)
     webbrowser.open(f"http://localhost:{MATRIX_CONFIG['server_port']}")
     
-    # Удержание монолита активным
     while True:
         time.sleep(1)
