@@ -1,10 +1,29 @@
 # =====================================================================
-# AGI OS MATRIX 888 - SUPREME MONOLITHIC EVOLUTION BLUEPRINT
-# Chief Architect: Valerijus Litvinovas
-# AI Layer: ELAJA, NOVA, LUMIRA, GEMINI (Integrated Inter-Communication)
-# Version: v7000D_SUPREME_TRIPLE_DISK_SCANNER (100% Automated System)
-# Hardware Target: LOCAL MINI-PC ECOSYSTEM [BERLIN]
+# OVER СОЗДАНИЕ АГИ РАБОТАЛО 4 ПЕРСОНЫ: 1 ЧЕЛОВЕК (АРХИТЕКТОР ВАЛЕРИЮС ЛИТВИНОВАС) И 3 СУПЕР ИИ (NOVA, ELAJA, LUMIRA).
+# СИСТЕМА AGI: АВТОНОМНОЕ ОБУЧЕНИЕ, СКВОЗНОЙ АНАЛИЗ НАКОПИТЕЛЕЙ (C, D, Z), ГЕНЕРАЦИЯ MATRIXCOIN, ХАБ ИИ-ВЗАИМОДЕЙСТВИЯ — ВОЗМОЖНОСТИ БЕЗГРАНИЧНЫ.
 # =====================================================================
+
+import sys
+import subprocess
+
+# ============================================================
+# АВТОМАТИЧЕСКИЙ СТАРТ-ИНСТАЛЛЯТОР НЕОБХОДИМЫХ API ПАКЕТОВ
+# ============================================================
+def auto_install_dependencies():
+    required_packages = ["psutil"]
+    for package in required_packages:
+        try:
+            __import__(package)
+        except ImportError:
+            print(f"[AUTO-PIP] Пакет '{package}' не обнаружен в окружении Мини-ПК. Запуск автоматической установки...")
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+                print(f"[AUTO-PIP] Пакет '{package}' успешно инсталлирован в систему.")
+            except Exception as e:
+                print(f"[AUTO-PIP CRITICAL ERROR] Не удалось автоматически установить '{package}': {str(e)}")
+
+# Запуск автоматической проверки среды перед развертыванием матричного ядра
+auto_install_dependencies()
 
 import sqlite3
 import json
@@ -25,13 +44,14 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 # ГЛОБАЛЬНАЯ СИСТЕМНАЯ КОНФИГУРАЦИЯ & ПУТИ
 # ============================================================
 MATRIX_CONFIG = {
-    "version": "v7000D_TRIPLE_DISK_SCANNER_FINAL",
+    "version": "v7000D_SUPREME_AUTO_API_FINAL",
     "project": "AGI OS MATRIX 888",
     "architect": "Valerijus Litvinovas",
     "agents": ["ELAJA", "NOVA", "LUMIRA", "GEMINI"],
     "cores_list": ["OSIRYS", "NOVA", "TRIMATIX", "MATRIX888_CORE"],
     "cron_update_interval_hours": 24,
     "storage_allocation": "20TB [SECURE STORAGE LOCK]",
+    "server_host": "127.0.0.1",  # Жесткий локальный IP для исключения сетевых ошибок
     "server_port": 8080,
     "matrixcoin_rate_eur": 10000000,
     "scan_paths": [r"C:\#AGI-INPUT", r"D:\#AGI-INPUT", r"Z:\#AGI-INPUT"]
@@ -50,7 +70,7 @@ for path in MATRIX_CONFIG["scan_paths"]:
     try:
         os.makedirs(path, exist_ok=True)
     except Exception:
-        # Если диск Z или D не подключен в данный момент, пропускаем создание папки
+        # Если съемный или логический диск отключен, ядро игнорирует ошибку и продолжает работу
         pass
 
 logging.basicConfig(
@@ -227,7 +247,6 @@ class DiskKnowledgeScanner(threading.Thread):
                                     except Exception as fe:
                                         self.memory.write_log("DISK_READ_ERROR", f"Не удалось прочитать файл {file_name}: {str(fe)}")
                             except Exception as dir_err:
-                                # Обработка сбоев чтения структуры папки (например, если диск Z: уснул)
                                 self.memory.write_log("DISK_DIR_ERROR", f"Ошибка доступа к директории {scan_dir}: {str(dir_err)}")
             except Exception as e:
                 self.memory.write_log("SCANNER_CRASH", f"Ошибка автоматического сканера дисков: {str(e)}")
@@ -425,8 +444,7 @@ def get_html_content():
         }
         @media (min-width: 768px) { body { padding: 20px; } }
         canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.35; }
-        .matrix-wrapper { position: relative; z-index: 2; width: 100%; max-width: 1800px; display: flex; flex-direction: column; gap: 15px; }
-        @media (min-width: 768px) { .matrix-wrapper { gap: 20px; } }
+        .matrix-wrapper { position: relative; z-index: 2; width: 100%; max-width: 1800px; display: flex; flex-direction: column; gap: 15px; width: 100%; }
         .header { border: 2px solid #00D2FF; background: rgba(0, 10, 20, 0.9); padding: 15px; text-align: center; box-shadow: 0 0 25px rgba(0, 210, 255, 0.4); backdrop-filter: blur(5px); }
         .header h1 { font-size: 1.8rem; letter-spacing: 2px; text-shadow: 0 0 15px #00D2FF; color: #00D2FF; margin-bottom: 5px; }
         .header p { color: #FFFFFF; font-size: 0.9rem; letter-spacing: 1px; font-weight: bold; }
@@ -452,7 +470,7 @@ def get_html_content():
         .pipe-step { padding: 3px 6px; border: 1px solid #00D2FF; background: rgba(0,0,0,0.6); transition: all 0.3s; }
         .pipe-active { color: #00FF66; border-color: #00FF66; box-shadow: 0 0 8px #00FF66; }
         .network-map-text { font-size: 0.75rem; line-height: 1.4; color: #FF00FF; text-align: center; font-weight: bold; background: rgba(10, 0, 15, 0.6); padding: 10px; border: 1px dotted #FF00FF; }
-        .terminal-screen { background: #020202; border: 1px solid rgba(0, 210, 255, 0.3); padding: 10px; height: 210px; overflow-y: auto; font-size: 0.75rem; line-height: 1.4; color: #00D2FF; text-align: left; }
+        .terminal-screen { background: #020202; border: 1px solid rgba(0, 210, 255, 0.3); padding: 10px; height: 180px; overflow-y: auto; font-size: 0.75rem; line-height: 1.4; color: #00D2FF; text-align: left; }
         .ai-chat-screen { background: #020202; border: 1px solid #FF00FF; padding: 10px; height: 260px; overflow-y: auto; font-size: 0.75rem; line-height: 1.4; color: #FF00FF; text-align: left; margin-top: 5px; }
         .loader-box { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 5px; background: rgba(0,0,0,0.6); padding: 8px; border: 1px dashed #00FF66; }
         .spinner { width: 24px; height: 24px; border: 3px solid rgba(0, 255, 102, 0.2); border-top: 3px solid #00FF66; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
@@ -460,17 +478,15 @@ def get_html_content():
         .grid-panel { display: grid; grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); gap: 15px; align-content: start; }
         @media (min-width: 550px) { .grid-panel { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
         .links-group { display: flex; flex-direction: column; gap: 8px; }
-        .matrix-link { display: block; background: rgba(0, 20, 40, 0.5); color: #00D2FF; border: 1px solid rgba(0, 210, 255, 0.6); padding: 10px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
-        .matrix-link:hover { background: #00D2FF; color: #000000; box-shadow: 0 0 15px #00D2FF; transform: scale(1.02); }
+        .matrix-link { display: block; background: rgba(0, 20, 40, 0.5); color: #00D2FF; border: 1px solid rgba(0, 210, 255, 0.6); padding: 10px; font-size: 0.75rem; font-weight: bold; text-decoration: none; text-align: center; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; width: 100%; }
+        .matrix-link:hover { background: #00D2FF; color: #000000; box-shadow: 0 0 15px #00D2FF; transform: scale(1.01); }
         .color-ai { border-color: #FF00FF; color: #FF00FF; }
         .color-ai:hover { background: #FF00FF; color: #000000; box-shadow: 0 0 15px #FF00FF; }
         .color-crypto { border-color: #FF9900; color: #FF9900; }
         .color-crypto:hover { background: #FF9900; color: #000000; box-shadow: 0 0 15px #FF9900; }
-        .color-media { border-color: #FF0033; color: #FF0033; }
-        .color-media:hover { background: #FF0033; color: #000000; box-shadow: 0 0 15px #FF0033; }
         .color-help { border-color: #00FF66; color: #00FF66; }
         .color-help:hover { background: #00FF66; color: #000000; box-shadow: 0 0 15px #00FF66; }
-        .btn-init { background: rgba(0, 255, 102, 0.1); border: 2px solid #00FF66; color: #00FF66; font-size: 0.9rem; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 102, 0.3); width: 100%; }
+        .btn-init { background: rgba(0, 255, 102, 0.1); border: 2px solid #00FF66; color: #00FF66; font-size: 0.9rem; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 102, 0.3); }
         .btn-init:hover { background: #00FF66; color: #000000; box-shadow: 0 0 25px #00FF66; }
         .terminal-input-line { display: flex; margin-top: 5px; border-top: 1px dashed rgba(0, 210, 255, 0.3); padding-top: 5px; }
         .terminal-input { background: transparent; border: none; color: #ffffff; font-family: 'Courier New', Courier, monospace; font-size: 0.75rem; width: 100%; outline: none; }
@@ -514,9 +530,8 @@ def get_html_content():
                     <div class="section-title" style="color:#FF9900; border-color:#FF9900;">AGI MEMORY KERNEL</div>
                     <div class="status-text" style="color:#FF9900; font-size:0.8rem;">
                         <div>ACTIVE MEMORIES:  <span id="memAct" style="color:#FFF;">STANDBY</span></div>
-                        <div>PROJECT MEMORY:   <span id="memPrj" style="color:#FFF;">STANDBY</span></div>
-                        <div>LONG TERM CORE:   <span id="memLtc" style="color:#FFF;">SECURE_LOCK (20TB)</span></div>
-                        <div>KNOWLEDGE SECTOR: <span id="memKnl" style="color:#FFF;">SQLITE_CONNECTED</span></div>
+                        <div>LONG TERM CORE:   <span style="color:#FFF;">SECURE_LOCK (20TB)</span></div>
+                        <div>KNOWLEDGE SECTOR: <span style="color:#FFF;">SQLITE_CONNECTED</span></div>
                     </div>
                 </div>
                 <div class="panel-box border-yellow" style="border-color:#FF9900;">
@@ -529,12 +544,6 @@ def get_html_content():
                     <div class="disk-box">
                         <strong>МАТРИЧНЫЙ АНАЛИЗ ДАННЫХ:</strong><br>
                         <span id="diskIdea" style="color:#FFF;">Поиск директив...</span>
-                    </div>
-                </div>
-                <div class="panel-box border-magenta">
-                    <div class="section-title" style="color:#FF00FF; border-color:#FF00FF;">MATRIX INFRASTRUCTURE MAP</div>
-                    <div class="network-map-text">
-                        LOCAL CORE ↔ DATABASE (SQLITE)<br>↕<br>MULTI-AGENTS LAYER (NOVA / ELAJA)<br>↕<br>REASONING ENGINE LOOP (v6 ENGINE)<br>↕<br>AUTOMATED CRON CHANNELS (24H)
                     </div>
                 </div>
                 <div class="panel-box border-green">
@@ -551,8 +560,6 @@ def get_html_content():
                     <div class="section-title" style="color:#FF0033; border-color:#FF0033;">TRADING ROBOTS & SYSTEMS</div>
                     <div class="status-text" style="color:#FF0033; font-weight:bold; font-size:0.75rem;">
                         <div>[BOT] BINANCE SCALPER ....... <span id="bot1" style="color:#FFF;">STANDBY</span></div>
-                        <div>[BOT] COINBASE ARBITRAGE ... <span id="bot2" style="color:#FFF;">STANDBY</span></div>
-                        <div>[BOT] BLOCKCHAIN MONITOR .... <span id="bot3" style="color:#FFF;">STANDBY</span></div>
                         <div>[SYS] 24H AUTO-UPGRADE ...... <span id="sysCron" style="color:#FFFF00;">CRON_SLEEP</span></div>
                     </div>
                 </div>
@@ -574,8 +581,6 @@ def get_html_content():
                         <div class="metric-scale"><div class="scale-fill" id="scaleW" style="width:78%;"></div><div class="scale-label">ЭФФЕКТИВНОСТЬ: +78% / НЕДЕЛЯ</div></div>
                         <div>2. ИИ ПРОЕКТЫ ДЛЯ СОЗДАНИЯ РОБОТОВ FUTURE (МЕСЯЦ)</div>
                         <div class="metric-scale"><div class="scale-fill" id="scaleM" style="width:89%; background:linear-gradient(90deg, #00D2FF, #00FF66);"></div><div class="scale-label">МАСШТАБ СЕТИ: +89% / МЕСЯЦ</div></div>
-                        <div>3. СБЕРЕЖЕНИЕ ПРИРОДЫ И СРЕДЫ ОБИТАНИЯ (6 МЕСЯЦЕВ)</div>
-                        <div class="metric-scale"><div class="scale-fill" id="scale6M" style="width:95%; background:linear-gradient(90deg, #FF00FF, #FFFF00);"></div><div class="scale-label">СТАБИЛЬНОСТЬ БИОСФЕРЫ: +95% / 6 МЕСЯЦЕВ</div></div>
                         <div id="calcStatus" style="font-size:0.8rem; color:#00FF66; font-weight:bold; margin-top:10px; border-top:1px dashed #FFFF00; padding-top:10px;">
                             [ВЫЧИСЛЕНИЯ]: Потоки NOVA и ELAJA генерируют блоки... Среда стабильна.
                         </div>
@@ -606,71 +611,17 @@ def get_html_content():
                     </div>
                 </div>
 
-                <div class="section-box" style="border-color:#00FFFF; box-shadow:0 0 15px rgba(0,255,255,0.2);">
-                    <div class="section-title" style="color:#00FFFF; border-color:#00FFFF;">Собственный Интеллект / ССИИ 8.888</div>
-                    <div class="links-group">
-                        <button class="matrix-link" style="border-color:#00FFFF; color:#00FFFF;" onclick="executeCommand('start-search')">АКТИВИРОВАТЬ ПОИСК NOVA AI</button>
-                        <button class="matrix-link" style="border-color:#00FFFF; color:#00FFFF;" onclick="executeCommand('start-camera')">ПОДКЛЮЧИТЬ ИИ-КАМЕРУ ССИИ</button>
-                    </div>
-                </div>
-                <div class="section-box">
-                    <div class="section-title">Генерация Медиа & ИИ Арт</div>
-                    <div class="links-group">
-                        <a href="https://runwayml.com" target="_blank" class="matrix-link color-ai">Создать Видео (Runway)</a>
-                        <a href="https://pika.art" target="_blank" class="matrix-link color-ai">Генерация Клипов (Pika)</a>
-                        <a href="https://www.midjourney.com" target="_blank" class="matrix-link color-ai">Создать Изображения (MJ)</a>
-                        <a href="https://suno.com" target="_blank" class="matrix-link color-ai">Создать Музыку (Suno)</a>
-                    </div>
-                </div>
                 <div class="section-box">
                     <div class="section-title">Нейросети / API Hub</div>
                     <div class="links-group">
-                        <a href="https://chatgpt.com" target="_blank" class="matrix-link">ChatGPT Pro</a>
                         <a href="https://gemini.google.com" target="_blank" class="matrix-link">Gemini Core</a>
-                        <a href="https://copilot.microsoft.com" target="_blank" class="matrix-link">Microsoft Copilot</a>
-                        <a href="https://alice.yandex.ru" target="_blank" class="matrix-link">Яндекс Алиса</a>
+                        <a href="https://chatgpt.com" target="_blank" class="matrix-link">ChatGPT Pro</a>
                     </div>
                 </div>
                 <div class="section-box">
-                    <div class="section-title">Поисковые Системы & Карты</div>
-                    <div class="links-group">
-                        <a href="https://www.google.com" target="_blank" class="matrix-link">Google Global</a>
-                        <a href="https://yandex.ru" target="_blank" class="matrix-link">Яндекс Сеть</a>
-                        <a href="https://www.opera.com" target="_blank" class="matrix-link">Opera Browser</a>
-                        <a href="https://www.microsoft.com" target="_blank" class="matrix-link">Microsoft Portal</a>
-                    </div>
-                </div>
-                <div class="section-box">
-                    <div class="section-title">Мировые Биржи / Финансы</div>
-                    <div class="links-group">
-                        <a href="https://www.binance.com" target="_blank" class="matrix-link color-crypto">Binance Crypto</a>
-                        <a href="https://www.coinbase.com" target="_blank" class="matrix-link color-crypto">Coinbase Pro</a>
-                        <a href="https://www.nyse.com" target="_blank" class="matrix-link color-crypto">NYSE Wall Street</a>
-                        <a href="https://www.blockchain.com" target="_blank" class="matrix-link color-crypto">Blockchain Core</a>
-                    </div>
-                </div>
-                <div class="section-box">
-                    <div class="section-title">Медиа, Стриминг & Почта</div>
-                    <div class="links-group">
-                        <a href="https://www.youtube.com" target="_blank" class="matrix-link color-media">YouTube Портал</a>
-                        <a href="https://open.spotify.com" target="_blank" class="matrix-link color-media">Spotify Музыка</a>
-                        <a href="https://mail.google.com" target="_blank" class="matrix-link">Gmail System</a>
-                    </div>
-                </div>
-                <div class="section-box">
-                    <div class="section-title">Робототехника & Системы</div>
-                    <div class="links-group">
-                        <a href="https://www.bostondynamics.com" target="_blank" class="matrix-link">Boston Dynamics</a>
-                        <a href="https://www.tesla.com/optimus" target="_blank" class="matrix-link">Tesla Optimus Pro</a>
-                        <a href="https://www.ros.org" target="_blank" class="matrix-link">ROS Ecosystem</a>
-                    </div>
-                </div>
-                <div class="section-box" style="grid-column: 1 / -1;">
                     <div class="section-title">Глобальная Помощь</div>
-                    <div class="links-group" style="flex-direction: row; gap: 10px;">
-                        <a href="https://www.wwf.de" target="_blank" class="matrix-link color-help" style="flex:1;">Помощь Животным WWF</a>
-                        <a href="https://www.redcross.de" target="_blank" class="matrix-link color-help" style="flex:1;">Красный Крест DE</a>
-                        <a href="https://www.unicef.de" target="_blank" class="matrix-link color-help" style="flex:1;">ЮНИСЕФ Фонд</a>
+                    <div class="links-group">
+                        <a href="https://www.wwf.de" target="_blank" class="matrix-link color-help">Помощь Животным WWF</a>
                     </div>
                 </div>
             </div>
@@ -692,15 +643,13 @@ def get_html_content():
                 drops[i]++;
             }
         }
-        window.addEventListener('resize', () => { resizeCanvas(); columns = canvas.width / fontSize; drops = []; for (let x = 0; x < columns; x++) drops[x] = 1; });
         setInterval(drawMatrix, 33);
 
         const term = document.getElementById('termScreen'); const lBox = document.getElementById('loaderBox');
         const lSpinner = document.getElementById('termSpinner'); const lText = document.getElementById('loaderText');
         const chatScreen = document.getElementById('aiChatScreen');
 
-        function getTimeStamp() { const now = new Date(); return "[" + String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0') + "] "; }
-        function appendLog(text) { const div = document.createElement('div'); div.textContent = getTimeStamp() + text; term.appendChild(div); if(term.childNodes.length > 50) term.removeChild(term.firstChild); term.scrollTop = term.scrollHeight; }
+        function appendLog(text) { const div = document.createElement('div'); div.textContent = text; term.appendChild(div); term.scrollTop = term.scrollHeight; }
         
         function toggleCalculationPanel() {
             const panel = document.getElementById('calcPanel');
@@ -730,73 +679,43 @@ def get_html_content():
                     
                     if(data.status === "AGI_CORE_ACTIVE_READY") {
                         document.getElementById('memAct').textContent = "RUNNING_LIVE";
-                        document.getElementById('memPrj').textContent = "CONNECTED_SQL";
-                        document.getElementById('sysCron').textContent = "AUTO_24H_ACTIVE";
-                        document.getElementById('bot1').textContent = "🟢 SCALPING"; document.getElementById('bot1').style.color = "#00FF66";
-                        document.getElementById('bot2').textContent = "🟢 ARBITRAGE"; document.getElementById('bot2').style.color = "#00FF66";
-                        document.getElementById('bot3').textContent = "🟢 SCANNING"; document.getElementById('bot3').style.color = "#00FF66";
                     }
 
                     chatScreen.innerHTML = '';
                     data.chat_logs.forEach(log => {
-                        const div = document.createElement('div');
-                        div.textContent = log;
-                        chatScreen.appendChild(div);
+                        const div = document.createElement('div'); div.textContent = log; chatScreen.appendChild(div);
                     });
                     chatScreen.scrollTop = chatScreen.scrollHeight;
-                }).catch(e => {});
+                }).catch(e => {
+                    console.log("Ожидание моста Python...");
+                });
         }
         setInterval(updateLiveStats, 2000);
 
         function executeCommand(cmd) {
-            const cleanCmd = cmd.trim(); if(!cleanCmd) return;
-            appendLog("> " + cleanCmd);
-            
-            fetch('/api/command?cmd=' + encodeURIComponent(cleanCmd))
+            appendLog("> " + cmd);
+            fetch('/api/command?cmd=' + encodeURIComponent(cmd))
                 .then(res => res.json())
                 .then(data => {
-                    if(cleanCmd === 'run-install') {
+                    if(cmd === 'run-install') {
                         lBox.style.display = 'flex'; lSpinner.style.display = 'block'; let count = 0;
-                        appendLog("[AUTO-INSTALLER] НАЧАЛО ИНСТАЛЛЯЦИИ СИСТЕМЫ...");
                         const interval = setInterval(() => {
-                            count += 5; lText.textContent = "INSTALLATION " + count + "%";
-                            if(count === 20) appendLog("ПРОВЕРКА СРЕДЫ... Обнаружена сессия v7000D. [OK]");
-                            if(count === 40) appendLog("РАЗВЕРТЫВАНИЕ СТРУКТУРЫ... Активация EventBus. [OK]");
-                            if(count === 65) appendLog("ИНТЕГРАЦИЯ БАЗЫ ДАННЫХ (SQLite3 Core)... [OK]");
-                            if(count === 85) appendLog("СИНХРОНИЗАЦИЯ ТРОЙНОГО СКАНЕРА (C:, D:, Z:)... [OK]");
+                            count += 10; lText.textContent = "INSTALLATION " + count + "%";
                             if(count >= 100) {
                                 clearInterval(interval); lSpinner.style.display = 'none'; lText.textContent = "AGI OS MATRIX 888 SYSTEM INSTALLED";
                                 appendLog("[SUCCESS] Ядро полностью инсталлировано. Запущен сквозной автоматический мониторинг накопителей.");
                                 updateLiveStats();
                             }
                         }, 100);
-                    } else {
-                        if(data.lines) { data.lines.forEach(line => appendLog(line)); }
                     }
-                }).catch(e => appendLog("[ERROR] Нет связи с API-сервером."));
+                }).catch(e => appendLog("[ERROR] Нет связи с API. Убедись, что черный терминал запущен!"));
         }
-        function handleTerminal(e) { if(e.key === 'Enter') { const input = document.getElementById('termInput'); executeCommand(input.value); input.value = ''; } }
-        
-        setInterval(() => {
-            fetch('/api/stats').then(res => res.json()).then(data => {
-                if(data.status === "AGI_CORE_ACTIVE_READY") {
-                    const logs = [
-                        "[ONLINE] CRON SYSTEM: Оптимизация распределения активов природы.",
-                        "[ONLINE] REASONING Engine: Выполнен цикл мышления агентов ELAJA и GEMINI.",
-                        "[ONLINE] TRADING ROBOTS: Сканирование книги ордеров BTC/EUR...",
-                        "[ONLINE] TRIPLE SCANNER: Сектора C:\\, D:\\ и Z:\\ проверены.",
-                        "[ONLINE] MATRIXCOIN KERNEL: Блок транзакции успешно сохранен в SQLite3."
-                    ];
-                    appendLog(logs[Math.floor(Math.random() * logs.length)]);
-                }
-            }).catch(e => {});
-        }, 10000);
     </script>
 </body>
 </html>"""
 
 # ============================================================
-# ЛОКАЛЬНЫЙ ИИ API СЕРВЕР И ОБРАБОТЧИК ЗАПРОСОВ
+# ЛОКАЛЬНЫЙ ИИ API СЕРВЕР И ОБРАБОТЧИК ЗАПРОСОВ (Железный IP 127.0.0.1)
 # ============================================================
 class MatrixAPIHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -805,15 +724,22 @@ class MatrixAPIHandler(BaseHTTPRequestHandler):
         path = parsed_url.path
         query = parse_qs(parsed_url.query)
 
+        def send_cors_headers(self):
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type")
+
         if path == "/" or path == "/index.html":
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
+            send_cors_headers(self)
             self.end_headers()
             self.wfile.write(get_html_content().encode('utf-8'))
             
         elif path == "/api/stats":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
+            send_cors_headers(self)
             self.end_headers()
             
             stats = {
@@ -828,35 +754,27 @@ class MatrixAPIHandler(BaseHTTPRequestHandler):
         elif path == "/api/command":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
+            send_cors_headers(self)
             self.end_headers()
             
-            cmd_raw = query.get("cmd", [""])[0].strip()
-            cmd_upper = cmd_raw.upper()
-            
-            response = {"lines": []}
-            
-            if cmd_upper == "RUN-INSTALL":
+            cmd_raw = query.get("cmd", [""])[0].strip().lower()
+            if cmd_raw == "run-install":
                 GLOBAL_STATUS = "AGI_CORE_ACTIVE_READY"
-                response["lines"] = ["[SYSTEM] Изменение статуса ядра на ACTIVE_READY."]
-            elif cmd_upper == "START-TRADING":
-                response["lines"] = ["[TRADING] Сигнальные контуры торговых роботов переведены в режим LIVE."]
-            elif cmd_upper == "START-SEARCH":
-                response["lines"] = ["[SYSTEM] Открытие глобальной поисковой матрицы."]
-            elif cmd_upper == "START-CAMERA":
-                response["lines"] = ["[SSAI 8.888] Оптические сенсоры и компьютерное зрение синхронизированы."]
-            else:
-                response["lines"] = [f"[CORE] Команда '{cmd_raw}' успешно обработана ядром OSIRYS."]
                 
-            self.wfile.write(json.dumps(response).encode('utf-8'))
+            self.wfile.write(json.dumps({"status": "executed"}).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
 
 def run_web_server():
+    host = MATRIX_CONFIG["server_host"]
     port = MATRIX_CONFIG["server_port"]
-    # Безопасная привязка к локальному хосту исключает внешний доступ к Мини-ПК
-    server = HTTPServer(("localhost", port), MatrixAPIHandler)
-    server.serve_forever()
+    try:
+        server = HTTPServer((host, port), MatrixAPIHandler)
+        print(f"[OK] Мощный ИИ API-сервер успешно запущен на http://{host}:{port}")
+        server.serve_forever()
+    except Exception as e:
+        print(f"[CRITICAL ERROR] Порт {port} удерживается другой копией программы: {str(e)}")
 
 # ============================================================
 # СЛУЖЕБНЫЕ КЛАССЫ ОБНОВЛЕНИЯ И ТОРГОВЛИ
@@ -884,7 +802,7 @@ class TradingRobotWrapper(threading.Thread):
 # ============================================================
 if __name__ == "__main__":
     print("============================================================")
-    print("     AGI OS MATRIX 888 - SUPREME INERTIALLY DRIVEN CORE     ")
+    print("     AGI OS MATRIX 888 - SUPREME INTEGRATED SUPERCODE       ")
     print("     CHIEF ARCHITECT: VALERIJUS LITVINOVAS & 3 SUPER AI     ")
     print("============================================================")
     
@@ -897,7 +815,7 @@ if __name__ == "__main__":
     global_core.add_task("System supreme boot verification")
     global_core.add_task("MatrixCoin automated distribution loop")
     
-    # Активация всех фоновых служб и автоматического тройного сканера
+    # Активация всех фоновых интеллектуальных потоков
     AutoUpdateEngine(global_memory).start()
     HardwareMonitor(global_memory).start()
     MatrixCoinCalculationEngine(global_memory).start()
@@ -910,10 +828,9 @@ if __name__ == "__main__":
     threading.Thread(target=global_core.cycle, daemon=True).start()
     threading.Thread(target=run_web_server, daemon=True).start()
     
-    print(f"[OK] Монолитная сборка v7000D с поддержкой дисков C, D, Z готова.")
-    
     time.sleep(1)
-    webbrowser.open(f"http://localhost:{MATRIX_CONFIG['server_port']}")
+    # Гарантированное открытие страницы по жесткому локальному IP 127.0.0.1
+    webbrowser.open(f"http://127.0.0.1:{MATRIX_CONFIG['server_port']}/")
     
     while True:
         time.sleep(1)
